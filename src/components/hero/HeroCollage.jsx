@@ -1,5 +1,30 @@
 import { Compass, Waveform } from './Decorative'
 
+const GIRL_WINDOW_FADE = {
+  top: 19,
+  topLeft: 32.5,
+  topRight: 32,
+}
+
+const girlWindowMask = {
+  WebkitMaskImage: [
+    `linear-gradient(to bottom, transparent 0%, black ${GIRL_WINDOW_FADE.top}%)`,
+    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topLeft}% ${GIRL_WINDOW_FADE.topLeft * 0.85}% at 0% 0%, transparent 0%, transparent 55%, black 100%)`,
+    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topRight}% ${GIRL_WINDOW_FADE.topRight * 0.85}% at 100% 0%, transparent 0%, transparent 55%, black 100%)`,
+  ].join(', '),
+  maskImage: [
+    `linear-gradient(to bottom, transparent 0%, black ${GIRL_WINDOW_FADE.top}%)`,
+    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topLeft}% ${GIRL_WINDOW_FADE.topLeft * 0.85}% at 0% 0%, transparent 0%, transparent 55%, black 100%)`,
+    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topRight}% ${GIRL_WINDOW_FADE.topRight * 0.85}% at 100% 0%, transparent 0%, transparent 55%, black 100%)`,
+  ].join(', '),
+  WebkitMaskComposite: 'source-in, source-in',
+  maskComposite: 'intersect',
+  WebkitMaskRepeat: 'no-repeat',
+  maskRepeat: 'no-repeat',
+  WebkitMaskSize: '100% 100%',
+  maskSize: '100% 100%',
+}
+
 export default function HeroCollage() {
   return (
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
@@ -67,6 +92,7 @@ export default function HeroCollage() {
           src="/img/girl-window.png"
           alt=""
           className="block h-auto w-full select-none"
+          style={girlWindowMask}
           draggable={false}
         />
       </div>
