@@ -172,9 +172,14 @@ export default function Hero() {
       id="top"
       className="relative h-svh max-h-svh w-full overflow-hidden bg-aemia-black text-aemia-bone"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_65%_40%,#1a1f1a_0%,#050505_55%,#000_100%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-[0.07] mix-blend-soft-light">
-        <img src="/img/bg.png" alt="" className="h-full w-full object-cover invert" />
+      {/* Hero background — as-is */}
+      <div className="pointer-events-none absolute inset-0">
+        <img
+          src="/img/bg.png"
+          alt=""
+          className="h-full w-full object-cover"
+          draggable={false}
+        />
       </div>
 
       <DecorativeLines />
