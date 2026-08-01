@@ -1,4 +1,4 @@
-import { Compass, SprayA, Waveform } from './Decorative'
+import { Compass, Waveform } from './Decorative'
 
 export default function HeroCollage() {
   return (
@@ -52,9 +52,24 @@ export default function HeroCollage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
+      {/* Spray-paint A — behind small photo, like refs */}
+      <div
+        className="parallax-layer absolute bottom-[12%] left-[26%] z-[1] w-[22%] max-w-[220px] min-w-[120px] md:bottom-[14%] md:left-[30%] md:w-[18%]"
+        data-depth="0.25"
+        data-collage="spray"
+      >
+        <img
+          src="/img/spray-a.png"
+          alt=""
+          className="h-auto w-full select-none opacity-80 rotate-[-6deg]"
+          draggable={false}
+          aria-hidden
+        />
+      </div>
+
       {/* Small silhouette — bottom left of collage */}
       <div
-        className="parallax-layer torn-edge-sm absolute bottom-[20%] left-[36%] w-[14%] max-w-[150px] min-w-[90px] md:bottom-[22%] md:left-[40%]"
+        className="parallax-layer torn-edge-sm absolute bottom-[20%] left-[36%] z-[2] w-[14%] max-w-[150px] min-w-[90px] md:bottom-[22%] md:left-[40%]"
         data-depth="0.45"
         data-collage="sil"
       >
@@ -64,15 +79,6 @@ export default function HeroCollage() {
           className="aspect-square w-full object-cover brightness-[0.65] contrast-[1.2] saturate-[0.4]"
         />
         <div className="absolute inset-0 bg-aemia-moss/25 mix-blend-soft-light" />
-      </div>
-
-      {/* Spray paint A behind silhouette */}
-      <div
-        className="parallax-layer absolute bottom-[14%] left-[28%] md:bottom-[16%] md:left-[32%]"
-        data-depth="0.25"
-        data-collage="spray"
-      >
-        <SprayA />
       </div>
 
       {/* Compass / star */}

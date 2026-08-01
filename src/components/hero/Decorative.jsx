@@ -73,34 +73,42 @@ export function Waveform({ className = "" }) {
 }
 
 export function SoundwaveIcon({ className = "" }) {
+  // Half-heights from center — bars extend above & below the axis
+  const amps = [3, 6, 11, 5, 14, 8, 4, 12, 7, 3, 9, 5]
+
   return (
     <svg
       className={className}
-      width="28"
-      height="14"
-      viewBox="0 0 28 14"
+      width="42"
+      height="18"
+      viewBox="0 0 42 18"
       fill="none"
       aria-hidden
     >
-      <rect className="sw-bar" x="0" y="5" width="2" height="4" fill="#5c705e" rx="0.5" />
-      <rect className="sw-bar" x="4" y="2" width="2" height="10" fill="#5c705e" rx="0.5" />
-      <rect className="sw-bar" x="8" y="0" width="2" height="14" fill="#778e78" rx="0.5" />
-      <rect className="sw-bar" x="12" y="3" width="2" height="8" fill="#5c705e" rx="0.5" />
-      <rect className="sw-bar" x="16" y="1" width="2" height="12" fill="#778e78" rx="0.5" />
-      <rect className="sw-bar" x="20" y="4" width="2" height="6" fill="#5c705e" rx="0.5" />
-      <rect className="sw-bar" x="24" y="2.5" width="2" height="9" fill="#5c705e" rx="0.5" />
+      <line
+        x1="0"
+        y1="9"
+        x2="42"
+        y2="9"
+        stroke="#7a8f7c"
+        strokeWidth="0.9"
+        opacity="0.85"
+      />
+      {amps.map((amp, i) => {
+        const x = 1.2 + i * 3.4
+        return (
+          <rect
+            key={i}
+            className="sw-bar"
+            x={x}
+            y={9 - amp}
+            width="1.2"
+            height={amp * 2}
+            fill="#7a8f7c"
+          />
+        )
+      })}
     </svg>
-  )
-}
-
-export function SprayA({ className = "" }) {
-  return (
-    <div className={`spray-a select-none pointer-events-none ${className}`} aria-hidden>
-      <span className="relative inline-block text-[7rem] leading-none md:text-[9rem]">
-        <span className="absolute inset-0 opacity-40 blur-[1px] scale-105">Ⓐ</span>
-        <span className="relative">Ⓐ</span>
-      </span>
-    </div>
   )
 }
 

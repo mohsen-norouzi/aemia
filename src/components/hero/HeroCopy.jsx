@@ -8,20 +8,27 @@ export default function HeroCopy() {
         NEW SINGLE
       </p>
 
-      <div className="relative mt-3 w-full" data-copy="title-wrap">
-        <h1
-          className="title-distressed font-display text-[clamp(3.6rem,12.5vw,8.75rem)] leading-[0.85] tracking-[0.01em]"
-          data-copy="title"
-        >
-          KLEPTOMANIAC
+      <div className="relative mt-2 w-full max-w-[640px]" data-copy="title-wrap">
+        <h1 className="m-0" data-copy="title">
+          <img
+            src="/img/kleptomaniac.png"
+            alt="Kleptomaniac"
+            className="h-auto w-full max-w-[min(100%,560px)] select-none"
+            draggable={false}
+          />
         </h1>
 
-        <span
-          className="pointer-events-none absolute -bottom-3 left-[12%] rotate-[-9deg] font-script text-[clamp(2.5rem,5.8vw,4rem)] leading-none text-aemia-moss md:left-[16%] md:-bottom-2"
+        <div
+          className="pointer-events-none absolute -bottom-[8%] left-[10%] z-10 w-[55%] max-w-[280px] rotate-[-8deg] md:left-[14%] md:w-[48%]"
           data-copy="outnow"
         >
-          OUT NOW
-        </span>
+          <img
+            src="/img/out-now.png"
+            alt="Out now"
+            className="h-auto w-full select-none"
+            draggable={false}
+          />
+        </div>
       </div>
 
       <p

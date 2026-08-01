@@ -167,19 +167,23 @@ export default function Hero() {
         {/* Bottom UI chrome */}
         <div className="relative flex items-end justify-between px-5 md:px-10">
           {/* Scroll indicator */}
-          <div className="flex items-end gap-3" data-ui="scroll">
-            <span className="mb-8 origin-bottom -rotate-90 font-body text-[0.55rem] tracking-[0.4em] text-aemia-ash whitespace-nowrap">
-              SCROLL
-            </span>
-            <div className="flex flex-col items-center gap-2">
-              <div className="h-14 w-px bg-gradient-to-b from-white/55 via-white/25 to-transparent md:h-20" />
-              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden>
-                <path
-                  d="M2 7.5C2 5 4 3 6 1.5C8 3 10 5 10 7.5C10 9.4 8.2 11 6 11C3.8 11 2 9.4 2 7.5Z"
-                  stroke="rgba(255,255,255,0.55)"
-                  strokeWidth="0.8"
-                />
-              </svg>
+          <div className="flex items-end gap-8 md:gap-12" data-ui="scroll">
+            <div className="flex flex-col items-start gap-2.5">
+              <span className="font-body text-[0.55rem] tracking-[0.35em] text-aemia-fog/80">
+                SCROLL
+              </span>
+              <div className="ml-[0.15rem] h-8 w-px bg-white/55 md:h-10" />
+            </div>
+
+            <div className="mb-[3px] flex items-center gap-0">
+              <div className="h-px w-28 bg-white/50 md:w-40" />
+              <img
+                src="/img/moon.png"
+                alt=""
+                className="h-4 w-auto -translate-x-0.5 -scale-x-100 select-none opacity-90 md:h-5"
+                draggable={false}
+                aria-hidden
+              />
             </div>
           </div>
 
