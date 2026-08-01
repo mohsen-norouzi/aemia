@@ -4,8 +4,12 @@ const LINKS = ['MUSIC', 'VIDEOS', 'TOUR', 'ABOUT', 'MERCH']
 
 export default function HeroNav() {
   return (
-    <header className="hero-nav relative z-30 flex items-start justify-between gap-4 px-5 pt-5 md:px-10 md:pt-7">
-      <div className="flex flex-col items-start gap-5 md:gap-6" data-nav="logo">
+    <header className="pointer-events-none absolute inset-x-0 top-0 z-50 px-5 pt-5 md:px-10 md:pt-7">
+      {/* Logo + star — top left */}
+      <div
+        className="pointer-events-auto flex flex-col items-start gap-5 md:gap-6"
+        data-nav="logo"
+      >
         <a href="#top" className="block shrink-0">
           <img
             src="/img/aemia-logo.png"
@@ -23,8 +27,9 @@ export default function HeroNav() {
         />
       </div>
 
+      {/* Center nav */}
       <nav
-        className="absolute left-1/2 top-7 hidden -translate-x-1/2 items-center gap-7 lg:flex md:top-8"
+        className="pointer-events-auto absolute left-1/2 top-5 hidden -translate-x-1/2 items-center gap-7 lg:flex md:top-7"
         aria-label="Primary"
       >
         {LINKS.map((label) => (
@@ -39,13 +44,14 @@ export default function HeroNav() {
         ))}
       </nav>
 
+      {/* LISTEN NOW + waveform — locked top-right */}
       <a
         href="#listen"
-        className="group relative z-40 flex shrink-0 items-center gap-3 pt-1.5 font-body text-[0.68rem] font-medium tracking-[0.28em] text-aemia-bone transition-opacity hover:opacity-80"
+        className="pointer-events-auto absolute right-5 top-5 z-50 flex items-center gap-3 font-body text-[0.7rem] font-medium tracking-[0.28em] text-white md:right-10 md:top-7"
         data-nav="cta"
       >
         LISTEN NOW
-        <SoundwaveIcon className="translate-y-px" />
+        <SoundwaveIcon />
       </a>
     </header>
   )

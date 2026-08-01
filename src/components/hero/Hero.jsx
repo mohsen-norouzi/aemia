@@ -17,12 +17,30 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
-      tl.from('[data-nav]', {
+      tl.from('[data-nav="logo"]', {
         y: -24,
         opacity: 0,
         duration: 0.9,
-        stagger: 0.08,
       })
+        .from(
+          '[data-nav="link"]',
+          {
+            y: -16,
+            opacity: 0,
+            duration: 0.7,
+            stagger: 0.06,
+          },
+          '-=0.55',
+        )
+        .from(
+          '[data-nav="cta"]',
+          {
+            y: -16,
+            opacity: 0,
+            duration: 0.7,
+          },
+          '-=0.55',
+        )
         .from(
           '[data-copy="eyebrow"]',
           { y: 16, opacity: 0, duration: 0.6 },
