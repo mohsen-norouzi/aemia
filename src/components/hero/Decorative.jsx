@@ -112,6 +112,55 @@ export function SoundwaveIcon({ className = "" }) {
   )
 }
 
+export function GlobeIcon({ className = '' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 64 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <ellipse
+        cx="32"
+        cy="20"
+        rx="30"
+        ry="18"
+        stroke="rgba(232,230,224,0.75)"
+        strokeWidth="0.9"
+      />
+      <ellipse
+        cx="32"
+        cy="20"
+        rx="14"
+        ry="18"
+        stroke="rgba(232,230,224,0.55)"
+        strokeWidth="0.7"
+      />
+      <path
+        d="M2 20 H62"
+        stroke="rgba(232,230,224,0.7)"
+        strokeWidth="0.7"
+      />
+      <path
+        d="M32 2 V38"
+        stroke="rgba(232,230,224,0.45)"
+        strokeWidth="0.6"
+      />
+      <path
+        d="M8 10 C20 14, 44 14, 56 10"
+        stroke="rgba(232,230,224,0.4)"
+        strokeWidth="0.6"
+      />
+      <path
+        d="M8 30 C20 26, 44 26, 56 30"
+        stroke="rgba(232,230,224,0.4)"
+        strokeWidth="0.6"
+      />
+    </svg>
+  )
+}
+
 export function DecorativeLines() {
   return (
     <div className="pointer-events-none absolute inset-0 z-[5] overflow-hidden" aria-hidden>

@@ -180,9 +180,9 @@ button,
 }
 
 .listen-btn:hover {
-  background: var(--color-aemia-bone);
+  background: #66846b;
   color: var(--color-aemia-black);
-  box-shadow: 0 0 24px rgba(232, 230, 224, 0.15);
+  box-shadow: 0 0 24px rgba(102, 132, 107, 0.18);
 }
 
 .listen-btn:hover .listen-arrow {

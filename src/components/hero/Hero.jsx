@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import HeroNav from './HeroNav'
 import HeroCopy from './HeroCopy'
 import HeroCollage from './HeroCollage'
+import HeroSocials from './HeroSocials'
 import { DecorativeLines } from './Decorative'
 import { useMusicGlitch } from '../../hooks/useMusicGlitch'
 
@@ -22,22 +23,22 @@ const GLITCH_SETTINGS = {
 function MoonScroll() {
   return (
     <div
-      className="absolute bottom-7 left-6 z-30 flex items-end gap-5 md:bottom-9 md:left-10 md:gap-7"
+      className="absolute bottom-7 right-6 z-30 flex flex-row-reverse items-end gap-5 md:bottom-9 md:right-10 md:gap-7"
       data-ui="scroll"
     >
-      <div className="flex flex-col items-start gap-2">
+      <div className="flex flex-col items-end gap-2">
         <span className="font-body text-[0.5rem] tracking-[0.38em] text-aemia-fog/85">
           SCROLL
         </span>
-        <div className="ml-[0.12rem] h-5 w-px bg-white/55 md:h-6" />
+        <div className="mr-[0.12rem] h-5 w-px bg-white/55 md:h-6" />
       </div>
 
-      <div className="mb-[9px] flex items-center md:mb-[11px]">
+      <div className="mb-[9px] flex flex-row-reverse items-center md:mb-[11px]">
         <div className="h-px w-24 bg-white/50 md:w-36" />
         <img
           src="/img/moon.png"
           alt=""
-          className="h-3.5 w-auto -translate-x-px -scale-x-100 select-none opacity-90 md:h-4"
+          className="h-3.5 w-auto translate-x-px select-none opacity-90 md:h-4"
           draggable={false}
           aria-hidden
         />
@@ -156,7 +157,7 @@ export default function Hero({ playing = false }) {
       )
 
       tl.from(
-        '[data-ui="scroll"], [data-ui="sections"]',
+        '[data-ui="scroll"], [data-ui="sections"], [data-ui="socials"]',
         { opacity: 0, duration: 0.7 },
         '-=0.45',
       )
@@ -292,6 +293,7 @@ export default function Hero({ playing = false }) {
       />
       <HeroNav />
       <HeroCopy />
+      <HeroSocials />
       <MoonScroll />
 
       <aside
