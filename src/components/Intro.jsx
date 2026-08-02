@@ -377,12 +377,23 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
 
       <div
         data-intro
-        className="absolute bottom-7 left-6 z-30 md:bottom-9 md:left-10"
+        className="pointer-events-none absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center md:bottom-9"
       >
-        <p className="font-body text-[0.58rem] font-medium tracking-[0.32em] text-aemia-bone/85">
-          MUSIC IS SURVIVAL.
+        <p className="font-body text-[0.55rem] font-medium tracking-[0.42em] text-aemia-fog/75 md:text-[0.58rem] md:tracking-[0.48em]">
+          MUSIC IS{' '}
+          <span className="text-[#66846b]">SURVIVAL</span>
+          <span className="text-aemia-fog/40">.</span>
         </p>
-        <div className="mt-3 h-px w-28 bg-white/45 md:w-36" />
+        <div
+          className="mt-3.5 flex items-center gap-1.5"
+          aria-hidden
+        >
+          <span className="h-px w-5 bg-[#66846b]/45 md:w-7" />
+          <span className="h-px w-10 bg-aemia-bone/30 md:w-14" />
+          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-aemia-bone/35" />
+          <span className="h-px w-10 bg-aemia-bone/30 md:w-14" />
+          <span className="h-px w-5 bg-[#66846b]/45 md:w-7" />
+        </div>
       </div>
     </section>
   )
