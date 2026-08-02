@@ -1,15 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import HeroNav from './HeroNav'
 import HeroCopy from './HeroCopy'
 import HeroCollage from './HeroCollage'
 import { DecorativeLines } from './Decorative'
+import { useMusicGlitch } from '../../hooks/useMusicGlitch'
 
 const INK_SETTINGS = {
   portrait: { size: 1.4, speed: 1, rotation: -8 },
   window: { size: 1.55, speed: 0.85, rotation: 12 },
   concert: { size: 1.7, speed: 1.15, rotation: -18 },
   eyes: { size: 1.5, speed: 0.95, rotation: 22 },
+}
+
+const GLITCH_SETTINGS = {
+  amount: 0.35,
+  everySeconds: 5,
+  burstMs: 500,
 }
 
 function MoonScroll() {
@@ -44,6 +51,13 @@ export default function Hero({ playing = false }) {
   const inkRef = useRef(null)
   const entranceCtxRef = useRef(null)
   const barsTweenRef = useRef(null)
+  const [inkReady, setInkReady] = useState(false)
+
+  useMusicGlitch(playing && inkReady, rootRef, GLITCH_SETTINGS)
+
+  const onInkReady = useCallback((ready) => {
+    setInkReady(Boolean(ready))
+  }, [])
 
   useEffect(() => {
     const root = rootRef.current
@@ -55,20 +69,16 @@ export default function Hero({ playing = false }) {
 
     entranceCtxRef.current = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      // Frame / OUT NOW / accent lines are ink-chrome — not in this set
       const otherLayers = gsap.utils.toArray(
         '[data-collage="spray"], [data-collage="wave"], [data-collage="peek"]',
       )
       const fadeShapes = gsap.utils.toArray('[data-fade-shape]')
 
-      // Hidden until their fade-in — otherwise they flash for the whole intro
-      // Start states already hidden in markup/CSS — only set non-border layers here
       gsap.set(fadeShapes, { opacity: 0 })
       gsap.set(otherLayers, { opacity: 0 })
       gsap.set('[data-copy="title"]', { opacity: 0 })
       gsap.set('.sw-bar', { scaleY: 0.35, transformOrigin: 'center center' })
 
-      // Ink starts with the page entrance (not after nav/copy)
       if (!reduceMotion) {
         tl.add(() => {
           inkRef.current?.replay?.()
@@ -79,7 +89,6 @@ export default function Hero({ playing = false }) {
         }, 0)
       }
 
-      // Window border, star, handwritten text — fade in with the page
       tl.to(
         fadeShapes,
         {
@@ -117,7 +126,6 @@ export default function Hero({ playing = false }) {
           '-=0.35',
         )
 
-      // Title fades in (no flash)
       tl.to(
         '[data-copy="title"]',
         {
@@ -161,7 +169,6 @@ export default function Hero({ playing = false }) {
     }
   }, [])
 
-  // Soundwave bars follow playback — smooth settle when song ends / tab hides
   useEffect(() => {
     const bars = gsap.utils.toArray('.sw-bar')
     if (!bars.length) return undefined
@@ -193,6 +200,75 @@ export default function Hero({ playing = false }) {
     return undefined
   }, [playing])
 
+  useEffect(() => {
+    const root = rootRef.current
+    if (!root) return undefined
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined
+    }
+
+    const els = gsap.utils.toArray(root.querySelectorAll('.parallax-layer'))
+    if (!els.length) return undefined
+
+    const layers = els.map((el, i) => {
+      const depth = Number(el.dataset.depth || 0.3)
+      return {
+        el,
+        depth,
+        lag: 0.02 + (1 - Math.min(depth, 1)) * 0.028 + (i % 7) * 0.006,
+        curX: 0,
+        curY: 0,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.12 + Math.random() * 0.22,
+        ampX: 1.8 + depth * 4.5 + Math.random() * 2.5,
+        ampY: 1.4 + depth * 3.5 + Math.random() * 2,
+        mxScale: 0.85 + Math.random() * 0.3,
+        myScale: 0.85 + Math.random() * 0.3,
+        invertX: Math.random() > 0.85 ? -1 : 1,
+        invertY: Math.random() > 0.88 ? -1 : 1,
+      }
+    })
+
+    const mouse = { x: 0, y: 0 }
+
+    const onMove = (e) => {
+      mouse.x = (e.clientX / window.innerWidth - 0.5) * 2
+      mouse.y = (e.clientY / window.innerHeight - 0.5) * 2
+    }
+
+    const tick = () => {
+      const t = performance.now() / 1000
+
+      layers.forEach((L) => {
+        const idleX =
+          Math.sin(t * L.speed + L.phase) * L.ampX +
+          Math.sin(t * L.speed * 0.4 + L.phase * 2.1) * L.ampX * 0.3
+        const idleY =
+          Math.cos(t * L.speed * 0.9 + L.phase * 1.35) * L.ampY +
+          Math.sin(t * L.speed * 0.55 + L.phase) * L.ampY * 0.25
+
+        const targetX =
+          mouse.x * L.depth * 12 * L.mxScale * L.invertX + idleX
+        const targetY =
+          mouse.y * L.depth * 8 * L.myScale * L.invertY + idleY
+
+        L.curX += (targetX - L.curX) * L.lag
+        L.curY += (targetY - L.curY) * L.lag
+        gsap.set(L.el, { x: L.curX, y: L.curY })
+      })
+    }
+
+    window.addEventListener('mousemove', onMove, { passive: true })
+    gsap.ticker.add(tick)
+
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      gsap.ticker.remove(tick)
+      layers.forEach((L) => gsap.set(L.el, { x: 0, y: 0 }))
+    }
+  }, [])
+
   return (
     <section
       ref={rootRef}
@@ -209,7 +285,11 @@ export default function Hero({ playing = false }) {
       </div>
 
       <DecorativeLines />
-      <HeroCollage ref={inkRef} inkSettings={INK_SETTINGS} />
+      <HeroCollage
+        ref={inkRef}
+        inkSettings={INK_SETTINGS}
+        onInkReady={onInkReady}
+      />
       <HeroNav />
       <HeroCopy />
       <MoonScroll />

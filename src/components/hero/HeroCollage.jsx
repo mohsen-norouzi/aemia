@@ -41,8 +41,10 @@ const STAR_CIRCLE = {
   rotate: 0,
 }
 
+const INK_COUNT = 4
+
 const HeroCollage = forwardRef(function HeroCollage(
-  { inkSettings = {} },
+  { inkSettings = {}, onInkReady },
   inkRef,
 ) {
   const mainInkRef = useRef(null)
@@ -51,11 +53,27 @@ const HeroCollage = forwardRef(function HeroCollage(
   const eyesInkRef = useRef(null)
   const chromeShownRef = useRef(false)
   const chromeFallbackRef = useRef(null)
+  const inkDoneRef = useRef(0)
+  const inkReadySentRef = useRef(false)
 
   const portrait = { ...DEFAULT_INK, ...inkSettings.portrait }
   const windowInk = { ...DEFAULT_INK, ...inkSettings.window }
   const concert = { ...DEFAULT_INK, ...inkSettings.concert }
   const eyes = { ...DEFAULT_INK, ...inkSettings.eyes }
+
+  const resetInkReady = useCallback(() => {
+    inkDoneRef.current = 0
+    inkReadySentRef.current = false
+    onInkReady?.(false)
+  }, [onInkReady])
+
+  const markInkDone = useCallback(() => {
+    inkDoneRef.current += 1
+    if (inkDoneRef.current >= INK_COUNT && !inkReadySentRef.current) {
+      inkReadySentRef.current = true
+      onInkReady?.(true)
+    }
+  }, [onInkReady])
 
   const revealChrome = useCallback(() => {
     if (chromeShownRef.current) return
@@ -112,10 +130,16 @@ const HeroCollage = forwardRef(function HeroCollage(
     chromeFallbackRef.current = gsap.delayedCall(3.2, revealChrome)
   }, [revealChrome])
 
+  const onMiaComplete = useCallback(() => {
+    markInkDone()
+    revealChrome()
+  }, [markInkDone, revealChrome])
+
   useImperativeHandle(
     inkRef,
     () => ({
       replay: async () => {
+        resetInkReady()
         hideChrome()
         await Promise.all([
           mainInkRef.current?.replay?.(),
@@ -125,6 +149,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         ])
       },
       reveal: async () => {
+        resetInkReady()
         await Promise.all([
           mainInkRef.current?.reveal?.(),
           miaInkRef.current?.reveal?.(),
@@ -132,9 +157,13 @@ const HeroCollage = forwardRef(function HeroCollage(
           eyesInkRef.current?.reveal?.(),
         ])
         revealChrome()
+        // Forced reveal = ink already at end
+        inkDoneRef.current = INK_COUNT
+        inkReadySentRef.current = true
+        onInkReady?.(true)
       },
     }),
-    [hideChrome, revealChrome],
+    [hideChrome, revealChrome, resetInkReady, onInkReady],
   )
 
   const baseInk = {
@@ -171,10 +200,12 @@ const HeroCollage = forwardRef(function HeroCollage(
 
       {/* Main portrait */}
       <div
-        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] z-[3] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
+        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] z-[3] w-[46%] max-w-[420px] min-w-[160px] overflow-hidden sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
         data-depth="0.35"
         data-collage="main"
         data-ink
+        data-glitch
+        data-glitch-src="/img/hero-portrait.png"
       >
         <InkRevealPortrait
           ref={mainInkRef}
@@ -184,6 +215,7 @@ const HeroCollage = forwardRef(function HeroCollage(
           size={portrait.size}
           speed={portrait.speed}
           rotation={portrait.rotation}
+          onComplete={markInkDone}
         />
         <div
           className="pointer-events-none absolute inset-0 opacity-0"
@@ -203,6 +235,8 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-depth="0.55"
         data-collage="concert"
         data-ink
+        data-glitch
+        data-glitch-src="/img/concert.jpg"
       >
         <div className="brightness-[0.7] contrast-[1.1] hue-rotate-[190deg] saturate-[0.6]">
           <InkRevealPortrait
@@ -214,6 +248,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             size={concert.size}
             speed={concert.speed}
             rotation={concert.rotation}
+            onComplete={markInkDone}
           />
         </div>
         <div className="absolute inset-0 bg-sky-900/25 mix-blend-color" />
@@ -221,10 +256,12 @@ const HeroCollage = forwardRef(function HeroCollage(
 
       {/* Eyes strip — ink */}
       <div
-        className="parallax-layer torn-edge absolute bottom-[16%] right-[4%] z-[5] w-[28%] max-w-[320px] min-w-[160px] md:bottom-[18%] md:right-[8%]"
+        className="parallax-layer torn-edge absolute bottom-[16%] right-[4%] z-[5] w-[28%] max-w-[320px] min-w-[160px] overflow-hidden md:bottom-[18%] md:right-[8%]"
         data-depth="0.7"
         data-collage="eyes"
         data-ink
+        data-glitch
+        data-glitch-src="/img/mia-star.jpeg"
       >
         <div className="brightness-[0.8] contrast-[1.15] saturate-[0.5]">
           <InkRevealPortrait
@@ -236,6 +273,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             size={eyes.size}
             speed={eyes.speed}
             rotation={eyes.rotation}
+            onComplete={markInkDone}
           />
         </div>
         <div className="absolute inset-0 bg-aemia-moss/35 mix-blend-color" />
@@ -258,6 +296,8 @@ const HeroCollage = forwardRef(function HeroCollage(
       >
         <div
           className="relative h-full w-full overflow-hidden"
+          data-glitch
+          data-glitch-src="/img/girl-window.png"
           style={{
             transform: `rotate(${GIRL_WINDOW.rotate}deg)`,
             // Soften hard rect edges so ink image border doesn't peek past the frame
@@ -278,7 +318,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             size={windowInk.size}
             speed={windowInk.speed}
             rotation={windowInk.rotation}
-            onComplete={revealChrome}
+            onComplete={onMiaComplete}
           />
           <div
             className="pointer-events-none absolute inset-x-0 top-0 z-[1] bg-gradient-to-b from-black to-transparent"
@@ -396,6 +436,8 @@ const HeroCollage = forwardRef(function HeroCollage(
         className="parallax-layer absolute left-[58%] top-[62%] z-[5] hidden w-[10%] max-w-[110px] rotate-3 overflow-hidden border border-white/15 opacity-60 lg:block"
         data-depth="0.8"
         data-collage="peek"
+        data-glitch
+        data-glitch-src="/img/girl-2.jpg"
       >
         <img
           src="/img/girl-2.jpg"
