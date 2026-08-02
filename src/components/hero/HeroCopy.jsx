@@ -33,7 +33,7 @@ export default function HeroCopy() {
           data-copy="outnow"
           style={{
             left: '57.5%',
-            bottom: '-19%',
+            bottom: '95.5%',
             width: '48%',
           }}
         >
@@ -64,7 +64,7 @@ export default function HeroCopy() {
           href="https://www.youtube.com/"
           target="_blank"
           rel="noreferrer"
-          className="listen-btn relative mt-7 flex w-[min(100%,280px)] items-center justify-between border-[0.5px] border-[#66846b]/50 bg-transparent py-[1.15rem] pl-6 pr-5 font-body text-[0.62rem] font-medium tracking-[0.34em] text-aemia-fog/90"
+          className="listen-btn relative mt-7 flex w-[min(100%,280px)] items-center justify-between gap-8 border-[0.5px] border-[#66846b]/50 bg-transparent py-[1.15rem] pl-6 pr-7 font-body text-[0.62rem] font-medium tracking-[0.34em] text-aemia-fog/90"
           data-copy="btn"
         >
           WATCH VIDEO

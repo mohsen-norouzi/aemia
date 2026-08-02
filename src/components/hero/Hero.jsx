@@ -103,14 +103,15 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
     entranceCtxRef.current = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
       const otherLayers = gsap.utils.toArray(
-        '[data-collage="spray"], [data-collage="wave"], [data-collage="peek"]',
+        '[data-collage="spray"], [data-collage="peek"]',
       )
       const fadeShapes = gsap.utils.toArray('[data-fade-shape]')
+      const wave = root.querySelector('[data-collage="wave"]')
 
       gsap.set(fadeShapes, { opacity: 0 })
       gsap.set(otherLayers, { opacity: 0 })
       gsap.set('[data-copy="title"]', { opacity: 0 })
-      // Bars are driven by endpoint attributes — no scaleY
+      if (wave) gsap.set(wave, { opacity: 0 })
 
       if (!reduceMotion) {
         tl.add(() => {
@@ -174,6 +175,19 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
         { y: 16, opacity: 0, duration: 0.6, stagger: 0.1 },
         '-=0.35',
       )
+
+      // Waveform right after WATCH VIDEO
+      if (wave) {
+        tl.to(
+          wave,
+          {
+            opacity: 1,
+            duration: 0.75,
+            ease: 'power2.out',
+          },
+          '-=0.15',
+        )
+      }
 
       tl.addLabel('collage', '-=0.95')
 
