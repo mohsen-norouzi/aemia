@@ -167,8 +167,9 @@ button,
 }
 
 /* Waveform bars */
-.wave-bar {
-  transform-origin: center center;
+.waveform-scratch {
+  opacity: 0.88;
+  overflow: visible;
 }
 
 /* Listen button hover */

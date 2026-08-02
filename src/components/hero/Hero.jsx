@@ -6,6 +6,7 @@ import HeroCollage from './HeroCollage'
 import HeroSocials from './HeroSocials'
 import { DecorativeLines } from './Decorative'
 import { useMusicGlitch } from '../../hooks/useMusicGlitch'
+import { useAudioReactiveBars } from '../../hooks/useAudioReactiveBars'
 
 const INK_SETTINGS = {
   portrait: { size: 1.4, speed: 1, rotation: -8 },
@@ -47,14 +48,14 @@ function MoonScroll() {
   )
 }
 
-export default function Hero({ playing = false }) {
+export default function Hero({ playing = false, audioGraphRef = null }) {
   const rootRef = useRef(null)
   const inkRef = useRef(null)
   const entranceCtxRef = useRef(null)
-  const barsTweenRef = useRef(null)
   const [inkReady, setInkReady] = useState(false)
 
   useMusicGlitch(playing && inkReady, rootRef, GLITCH_SETTINGS)
+  useAudioReactiveBars(playing, audioGraphRef)
 
   const onInkReady = useCallback((ready) => {
     setInkReady(Boolean(ready))
@@ -78,7 +79,7 @@ export default function Hero({ playing = false }) {
       gsap.set(fadeShapes, { opacity: 0 })
       gsap.set(otherLayers, { opacity: 0 })
       gsap.set('[data-copy="title"]', { opacity: 0 })
-      gsap.set('.sw-bar, .wave-bar', { scaleY: 0.35, transformOrigin: 'center center' })
+      // Bars are driven by endpoint attributes — no scaleY
 
       if (!reduceMotion) {
         tl.add(() => {
@@ -164,42 +165,9 @@ export default function Hero({ playing = false }) {
     }, root)
 
     return () => {
-      barsTweenRef.current?.kill()
-      barsTweenRef.current = null
       entranceCtxRef.current?.revert()
     }
   }, [])
-
-  useEffect(() => {
-    const bars = gsap.utils.toArray('.sw-bar, .wave-bar')
-    if (!bars.length) return undefined
-
-    barsTweenRef.current?.kill()
-    barsTweenRef.current = null
-
-    if (playing) {
-      barsTweenRef.current = gsap.to(bars, {
-        scaleY: () => gsap.utils.random(0.45, 1.45),
-        transformOrigin: 'center center',
-        duration: () => gsap.utils.random(0.2, 0.45),
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-        stagger: 0.05,
-      })
-      return undefined
-    }
-
-    gsap.to(bars, {
-      scaleY: 0.35,
-      duration: 0.85,
-      ease: 'power2.out',
-      stagger: 0.04,
-      overwrite: true,
-    })
-
-    return undefined
-  }, [playing])
 
   useEffect(() => {
     const root = rootRef.current

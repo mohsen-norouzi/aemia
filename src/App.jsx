@@ -1,17 +1,28 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Intro from './components/Intro'
 import Hero from './components/hero/Hero'
+import { createAudioGraph, resumeAudioGraph } from './lib/audioGraph'
 
 function App() {
   const [entered, setEntered] = useState(false)
   const [playing, setPlaying] = useState(false)
   const audioRef = useRef(null)
+  const audioGraphRef = useRef(null)
   const resumeOnVisibleRef = useRef(false)
+
+  const ensureGraph = useCallback(() => {
+    if (audioGraphRef.current) return audioGraphRef.current
+    const graph = createAudioGraph(audioRef.current)
+    audioGraphRef.current = graph
+    return graph
+  }, [])
 
   const startPlayback = useCallback(async () => {
     const audio = audioRef.current
     if (!audio) return
     audio.loop = false
+    const graph = ensureGraph()
+    await resumeAudioGraph(graph)
     try {
       await audio.play()
       setPlaying(true)
@@ -19,7 +30,7 @@ function App() {
       console.warn('[audio] play failed', err)
       setPlaying(false)
     }
-  }, [])
+  }, [ensureGraph])
 
   // Called on ENTER click (user gesture) — start song immediately
   const handleEnterClick = useCallback(() => {
@@ -88,7 +99,7 @@ function App() {
     <main>
       <audio ref={audioRef} src="/song.mp3" preload="auto" playsInline />
       {entered ? (
-        <Hero playing={playing} />
+        <Hero playing={playing} audioGraphRef={audioGraphRef} />
       ) : (
         <Intro
           onEnterClick={handleEnterClick}
