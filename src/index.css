@@ -234,6 +234,33 @@ button,
   outline-offset: 4px;
 }
 
+/* Star shine — clock-tick spin while music plays */
+.star-shine-spin {
+  transform-origin: 50% 50%;
+  animation: star-shine-tick 60s steps(60) infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.star-shine-spin.is-ticking {
+  animation-play-state: running;
+}
+
+@keyframes star-shine-tick {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-shine-spin {
+    animation: none;
+  }
+}
+
 /* Listen button hover */
 .listen-btn {
   transition:

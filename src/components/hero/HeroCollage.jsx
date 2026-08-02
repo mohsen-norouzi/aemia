@@ -468,7 +468,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         <img
           src="/img/star-shine.png"
           alt=""
-          className="h-auto w-full select-none mix-blend-screen"
+          className={`star-shine-spin h-auto w-full select-none mix-blend-screen ${playing ? 'is-ticking' : ''}`}
           style={{ opacity: shineOpacity }}
           draggable={false}
           aria-hidden
