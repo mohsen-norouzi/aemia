@@ -79,7 +79,7 @@ function App() {
     return () => audio.removeEventListener('ended', onEnded)
   }, [])
 
-  // LISTEN NOW / nav CTA can restart the track
+  // Nav CTA toggles pause/resume; hero LISTEN NOW restarts
   useEffect(() => {
     if (!entered) return undefined
 
@@ -91,8 +91,29 @@ function App() {
       startPlayback()
     }
 
+    const onToggle = () => {
+      const audio = audioRef.current
+      if (!audio) return
+      resumeOnVisibleRef.current = false
+
+      if (!audio.paused) {
+        audio.pause()
+        setPlaying(false)
+        return
+      }
+
+      if (audio.ended || audio.currentTime >= audio.duration) {
+        audio.currentTime = 0
+      }
+      startPlayback()
+    }
+
     window.addEventListener('aemia:listen', onListen)
-    return () => window.removeEventListener('aemia:listen', onListen)
+    window.addEventListener('aemia:toggle', onToggle)
+    return () => {
+      window.removeEventListener('aemia:listen', onListen)
+      window.removeEventListener('aemia:toggle', onToggle)
+    }
   }, [entered, startPlayback])
 
   return (

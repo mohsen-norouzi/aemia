@@ -259,7 +259,7 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
         inkSettings={INK_SETTINGS}
         onInkReady={onInkReady}
       />
-      <HeroNav />
+      <HeroNav playing={playing} />
       <HeroCopy />
       <HeroSocials />
       <MoonScroll />

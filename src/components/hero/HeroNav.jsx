@@ -2,7 +2,7 @@ import { SoundwaveIcon } from './Decorative'
 
 const LINKS = ['MUSIC', 'VIDEOS', 'TOUR', 'ABOUT', 'MERCH']
 
-export default function HeroNav() {
+export default function HeroNav({ playing = false }) {
   return (
     <header className="pointer-events-none absolute inset-x-0 top-0 z-50 h-14 md:h-16">
       <a
@@ -46,18 +46,18 @@ export default function HeroNav() {
         ))}
       </nav>
 
-      <a
-        href="#listen"
-        className="pointer-events-auto absolute right-6 top-5 z-50 flex items-center gap-2.5 font-body text-[0.62rem] font-medium tracking-[0.28em] text-white md:right-10 md:top-6"
+      <button
+        type="button"
+        className="pointer-events-auto absolute right-6 top-5 z-50 flex items-center gap-2.5 font-body text-[0.62rem] font-medium tracking-[0.28em] text-white transition-colors hover:text-aemia-fog md:right-10 md:top-6"
         data-nav="cta"
-        onClick={(e) => {
-          e.preventDefault()
-          window.dispatchEvent(new CustomEvent('aemia:listen'))
+        aria-label={playing ? 'Pause' : 'Listen now'}
+        onClick={() => {
+          window.dispatchEvent(new CustomEvent('aemia:toggle'))
         }}
       >
         LISTEN NOW
         <SoundwaveIcon />
-      </a>
+      </button>
     </header>
   )
 }

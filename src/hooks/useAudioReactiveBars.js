@@ -1,5 +1,11 @@
 import { useEffect, useRef } from 'react'
 
+const WAVE_IDLE = 1
+const SW_IDLE = 0.35
+const PLAY_LERP = 0.42
+const STOP_LERP = 0.07
+const SETTLE_EPS = 0.008
+
 function setBarLevel(bar, level) {
   const amp = Number(bar.dataset.amp || 0)
   const mid = Number(bar.dataset.mid || 0)
@@ -15,32 +21,42 @@ function setBarLevel(bar, level) {
   })
 }
 
+function ensureLevels(ref, waveN, swN) {
+  if (!ref.current.wave || ref.current.wave.length !== waveN) {
+    ref.current.wave = new Float32Array(waveN).fill(WAVE_IDLE)
+  }
+  if (!ref.current.sw || ref.current.sw.length !== swN) {
+    ref.current.sw = new Float32Array(swN).fill(SW_IDLE)
+  }
+}
+
 /**
  * Drive .sw-bar / .wave-bar by rewriting stroke endpoints
  * so amplitude grows equally above and below the midline.
+ * On stop/end, levels ease back to the default silhouette.
  */
 export function useAudioReactiveBars(playing, audioGraphRef) {
   const rafRef = useRef(0)
+  const levelsRef = useRef({ wave: null, sw: null })
 
   useEffect(() => {
     const swBars = Array.from(document.querySelectorAll('.sw-bar'))
     const waveBars = Array.from(document.querySelectorAll('.wave-bar'))
     if (!swBars.length && !waveBars.length) return undefined
 
+    ensureLevels(levelsRef, waveBars.length, swBars.length)
     cancelAnimationFrame(rafRef.current)
 
-    if (!playing) {
-      waveBars.forEach((bar) => setBarLevel(bar, 1))
-      swBars.forEach((bar) => setBarLevel(bar, 0.35))
-      return undefined
-    }
-
-    const smoothWave = new Float32Array(waveBars.length).fill(0.85)
-    const smoothSw = new Float32Array(swBars.length).fill(0.5)
+    let alive = true
 
     const tick = () => {
+      if (!alive) return
+
+      const waveLevels = levelsRef.current.wave
+      const swLevels = levelsRef.current.sw
       const graph = audioGraphRef?.current
-      if (graph?.analyser) {
+
+      if (playing && graph?.analyser) {
         const { analyser, freq, time } = graph
         analyser.getByteFrequencyData(freq)
         analyser.getByteTimeDomainData(time)
@@ -62,8 +78,8 @@ export function useAudioReactiveBars(playing, audioGraphRef) {
 
           const level = Math.min(1, freqLevel * 0.85 + timeLevel * 0.55)
           const target = Math.max(0.12, envelope * (0.18 + level * 1.15))
-          smoothWave[i] += (target - smoothWave[i]) * 0.42
-          setBarLevel(waveBars[i], smoothWave[i])
+          waveLevels[i] += (target - waveLevels[i]) * PLAY_LERP
+          setBarLevel(waveBars[i], waveLevels[i])
         }
 
         const swN = swBars.length
@@ -75,17 +91,38 @@ export function useAudioReactiveBars(playing, audioGraphRef) {
           )
           const level = freq[bin] / 255
           const target = Math.max(0.2, 0.3 + level * 1.25)
-          smoothSw[i] += (target - smoothSw[i]) * 0.35
-          setBarLevel(swBars[i], smoothSw[i])
+          swLevels[i] += (target - swLevels[i]) * 0.35
+          setBarLevel(swBars[i], swLevels[i])
         }
+
+        rafRef.current = requestAnimationFrame(tick)
+        return
       }
 
-      rafRef.current = requestAnimationFrame(tick)
+      // Smoothly settle back to default shape
+      let settling = false
+      for (let i = 0; i < waveBars.length; i++) {
+        waveLevels[i] += (WAVE_IDLE - waveLevels[i]) * STOP_LERP
+        if (Math.abs(waveLevels[i] - WAVE_IDLE) > SETTLE_EPS) settling = true
+        else waveLevels[i] = WAVE_IDLE
+        setBarLevel(waveBars[i], waveLevels[i])
+      }
+      for (let i = 0; i < swBars.length; i++) {
+        swLevels[i] += (SW_IDLE - swLevels[i]) * STOP_LERP
+        if (Math.abs(swLevels[i] - SW_IDLE) > SETTLE_EPS) settling = true
+        else swLevels[i] = SW_IDLE
+        setBarLevel(swBars[i], swLevels[i])
+      }
+
+      if (settling) {
+        rafRef.current = requestAnimationFrame(tick)
+      }
     }
 
     rafRef.current = requestAnimationFrame(tick)
 
     return () => {
+      alive = false
       cancelAnimationFrame(rafRef.current)
     }
   }, [playing, audioGraphRef])
