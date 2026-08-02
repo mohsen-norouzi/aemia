@@ -27,6 +27,17 @@ const GIRL_WINDOW_FADE = {
   topRight: 53,
 }
 
+/** Locked portrait foot fade (Leva) */
+const PORTRAIT_FOOT_FADE = {
+  fadeHeight: 5,
+  maskSolid: 62,
+  maskStart: 30,
+  maskMid: 70.5,
+  maskEdge: 50,
+  brushDistort: 0,
+  overlayStrength: 1,
+}
+
 const WAVE_PLAY = {
   size: 139,
   opacity: 0.33,
@@ -73,10 +84,23 @@ const HeroCollage = forwardRef(function HeroCollage(
     maxWidth: portraitMaxWidth = 488,
     heightShow = 93,
     opacity: portraitOpacity = 1,
-    blendFade = 12,
     top: portraitTop = 1,
     left: portraitLeft = 45.5,
   } = portraitLayout
+
+  const {
+    fadeHeight,
+    maskSolid,
+    maskStart,
+    maskMid,
+    maskEdge,
+    brushDistort,
+    overlayStrength,
+  } = PORTRAIT_FOOT_FADE
+
+  const footMask = `linear-gradient(to bottom, #000 0%, #000 ${maskSolid}%, rgba(0,0,0,0.92) ${maskStart}%, rgba(0,0,0,0.55) ${maskMid}%, rgba(0,0,0,0.18) ${maskEdge}%, transparent 100%)`
+
+  const footOverlay = `linear-gradient(to bottom, rgba(5,5,5,0) 0%, rgba(5,5,5,${0.12 * overlayStrength}) 35%, rgba(5,5,5,${0.45 * overlayStrength}) 62%, rgba(5,5,5,${0.82 * overlayStrength}) 82%, rgba(5,5,5,${overlayStrength}) 100%)`
 
   const {
     left: shineLeft = 82,
@@ -243,7 +267,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Main portrait — taller natural ratio, black bg soft-blends into page */}
+      {/* Main portrait — taller natural ratio, brush foot fade into page */}
       <div
         className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[2] min-w-[160px] overflow-hidden"
         style={{
@@ -252,6 +276,12 @@ const HeroCollage = forwardRef(function HeroCollage(
           width: `${portraitWidth}%`,
           maxWidth: portraitMaxWidth,
           opacity: portraitOpacity,
+          WebkitMaskImage: footMask,
+          maskImage: footMask,
+          WebkitMaskSize: '100% 100%',
+          maskSize: '100% 100%',
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
         }}
         data-depth="0.35"
         data-collage="main"
@@ -283,7 +313,11 @@ const HeroCollage = forwardRef(function HeroCollage(
         </div>
         <div
           className="portrait-blend-fade"
-          style={{ height: `${blendFade}%` }}
+          style={{
+            height: `${fadeHeight}%`,
+            background: footOverlay,
+            filter: brushDistort > 0 ? 'url(#portraitBrushFade)' : 'none',
+          }}
           aria-hidden
         />
       </div>

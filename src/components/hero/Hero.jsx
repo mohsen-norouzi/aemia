@@ -19,7 +19,7 @@ const PORTRAIT_LAYOUT = {
   maxWidth: 488,
   heightShow: 93,
   opacity: 1,
-  blendFade: 12,
+  blendFade: 5,
   top: 1,
   left: 45.5,
 }
@@ -70,7 +70,7 @@ function MoonScroll() {
         <img
           src="/img/moon.png"
           alt=""
-          className="h-3.5 w-auto translate-x-px select-none opacity-90 md:h-4"
+          className="h-6 w-auto translate-x-px select-none opacity-90 md:h-7"
           draggable={false}
           aria-hidden
         />
