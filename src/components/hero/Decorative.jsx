@@ -65,8 +65,8 @@ export function Waveform({ className = "" }) {
     if (scratchRand(i, 0) < 0.07) return null
 
     const amp = Math.max(2, envelope * jagged * (H - 6))
-    const centerBias = Math.sin(Math.PI * t)
-    const useBone = centerBias > 0.7 || scratchRand(i, 2) > 0.55
+    // Mostly sage green, with sparse white scratches for the brand mix
+    const useBone = scratchRand(i, 2) > 0.72
     const strokes = scratchRand(i, 3) > 0.62 ? 2 : 1
     const baseX = i * step + step * 0.25 + (scratchRand(i, 4) - 0.5) * 1.6
 
@@ -76,7 +76,9 @@ export function Waveform({ className = "" }) {
       baseX,
       strokes,
       color: useBone ? bone : green,
-      opacity: 0.28 + scratchRand(i, 5) * 0.55,
+      opacity: useBone
+        ? 0.45 + scratchRand(i, 5) * 0.4
+        : 0.55 + scratchRand(i, 5) * 0.4,
       width: 0.45 + scratchRand(i, 6) * 0.85,
       topJitter: (scratchRand(i, 7) - 0.5) * 2.4,
       botJitter: (scratchRand(i, 8) - 0.5) * 2.4,
@@ -95,7 +97,7 @@ export function Waveform({ className = "" }) {
       x1: x0 + len,
       y0: mid + (scratchRand(i, 23) - 0.5) * 1.2,
       y1: mid + (scratchRand(i, 24) - 0.5) * 1.2,
-      opacity: 0.18 + scratchRand(i, 25) * 0.4,
+      opacity: 0.35 + scratchRand(i, 25) * 0.45,
       width: 0.35 + scratchRand(i, 26) * 0.4,
     }
   }).filter(Boolean)
@@ -135,7 +137,7 @@ export function Waveform({ className = "" }) {
         </filter>
       </defs>
 
-      <g filter="url(#waveGrain)" opacity="0.92">
+      <g filter="url(#waveGrain)" opacity="1">
         {axis.map((a) => (
           <line
             key={`axis-${a.i}`}

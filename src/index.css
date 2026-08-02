@@ -168,7 +168,7 @@ button,
 
 /* Waveform bars */
 .waveform-scratch {
-  opacity: 0.88;
+  opacity: 1;
   overflow: visible;
 }
 

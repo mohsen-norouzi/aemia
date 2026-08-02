@@ -424,7 +424,7 @@ const HeroCollage = forwardRef(function HeroCollage(
 
       {/* Soundwave graphic */}
       <div
-        className="parallax-layer absolute bottom-[10%] right-[8%] z-[5] w-[46%] max-w-[440px] opacity-80 md:bottom-[12%] md:right-[12%]"
+        className="parallax-layer absolute bottom-[10%] right-[8%] z-[5] w-[46%] max-w-[440px] opacity-95 md:bottom-[12%] md:right-[12%]"
         data-depth="0.4"
         data-collage="wave"
       >
