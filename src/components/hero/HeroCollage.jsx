@@ -33,6 +33,14 @@ const DEFAULT_INK = {
   rotation: INK_REVEAL.rotation,
 }
 
+const STAR_CIRCLE = {
+  left: 22.5,
+  top: 3,
+  width: 520,
+  opacity: 0.72,
+  rotate: 0,
+}
+
 const HeroCollage = forwardRef(function HeroCollage(
   { inkSettings = {} },
   inkRef,
@@ -136,9 +144,34 @@ const HeroCollage = forwardRef(function HeroCollage(
 
   return (
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
+      {/* Star circle — locked behind girl images */}
+      <div
+        className="parallax-layer absolute z-0 opacity-0"
+        data-depth="0.2"
+        data-collage="star-circle"
+        data-fade-shape="star-circle"
+        style={{
+          left: `${STAR_CIRCLE.left}%`,
+          top: `${STAR_CIRCLE.top}%`,
+          width: STAR_CIRCLE.width,
+        }}
+      >
+        <img
+          src="/img/star-circle.png"
+          alt=""
+          className="h-auto w-full select-none"
+          style={{
+            opacity: STAR_CIRCLE.opacity,
+            transform: `rotate(${STAR_CIRCLE.rotate}deg)`,
+          }}
+          draggable={false}
+          aria-hidden
+        />
+      </div>
+
       {/* Main portrait */}
       <div
-        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
+        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] z-[3] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
         data-depth="0.35"
         data-collage="main"
         data-ink
