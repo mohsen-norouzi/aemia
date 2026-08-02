@@ -63,8 +63,8 @@ const HeroCollage = forwardRef(function HeroCollage(
     width: portraitWidth = 60,
     maxWidth: portraitMaxWidth = 488,
     heightShow = 93,
-    opacity: portraitOpacity = 0.85,
-    blendFade = 60,
+    opacity: portraitOpacity = 1,
+    blendFade = 12,
     top: portraitTop = 1,
     left: portraitLeft = 45.5,
   } = portraitLayout
@@ -222,7 +222,7 @@ const HeroCollage = forwardRef(function HeroCollage(
 
       {/* Main portrait — taller natural ratio, black bg soft-blends into page */}
       <div
-        className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[3] min-w-[160px] overflow-hidden"
+        className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[2] min-w-[160px] overflow-hidden"
         style={{
           left: `${portraitLeft}%`,
           top: `${portraitTop}%`,
@@ -234,11 +234,11 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="main"
         data-ink
         data-glitch
-        data-glitch-src="/img/hero-portrait.jpg"
+        data-glitch-src="/img/hero-portrait.png"
       >
         <InkRevealPortrait
           ref={mainInkRef}
-          imageUrl="/img/hero-portrait.jpg"
+          imageUrl="/img/hero-portrait.png"
           alt="Aemia"
           {...baseInk}
           size={portrait.size}
@@ -430,9 +430,9 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Star shine */}
+      {/* Star shine — behind portrait only */}
       <div
-        className="parallax-layer absolute z-[5] opacity-0"
+        className="parallax-layer absolute z-[1] opacity-0"
         data-depth="0.9"
         data-collage="compass"
         data-fade-shape="star"

@@ -19,8 +19,8 @@ const PORTRAIT_LAYOUT = {
   width: 60,
   maxWidth: 488,
   heightShow: 93,
-  opacity: 0.85,
-  blendFade: 60,
+  opacity: 1,
+  blendFade: 12,
   top: 1,
   left: 45.5,
 }
