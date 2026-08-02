@@ -1,10 +1,16 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import { useControls, button } from 'leva'
 import HeroNav from './HeroNav'
 import HeroCopy from './HeroCopy'
 import HeroCollage from './HeroCollage'
 import { DecorativeLines } from './Decorative'
+
+const INK_SETTINGS = {
+  portrait: { size: 1.4, speed: 1, rotation: -8 },
+  window: { size: 1.55, speed: 0.85, rotation: 12 },
+  concert: { size: 1.7, speed: 1.15, rotation: -18 },
+  eyes: { size: 1.5, speed: 0.95, rotation: 22 },
+}
 
 function MoonScroll() {
   return (
@@ -33,61 +39,10 @@ function MoonScroll() {
   )
 }
 
-function inkControls(defaults = {}) {
-  return {
-    size: { value: defaults.size ?? 1.35, min: 0.6, max: 3, step: 0.01 },
-    speed: { value: defaults.speed ?? 1, min: 0.3, max: 2.5, step: 0.05 },
-    rotation: {
-      value: defaults.rotation ?? 0,
-      min: -180,
-      max: 180,
-      step: 1,
-    },
-  }
-}
-
 export default function Hero() {
   const rootRef = useRef(null)
   const inkRef = useRef(null)
   const entranceCtxRef = useRef(null)
-
-  useControls(
-    'Ink reveals',
-    {
-      replayAll: button(() => {
-        inkRef.current?.replay?.()
-      }),
-    },
-    { collapsed: true },
-  )
-
-  const portrait = useControls(
-    'Ink · Portrait',
-    inkControls({ size: 1.4, speed: 1, rotation: -8 }),
-    { collapsed: true },
-  )
-  const windowInk = useControls(
-    'Ink · Window',
-    inkControls({ size: 1.55, speed: 0.85, rotation: 12 }),
-    { collapsed: true },
-  )
-  const concert = useControls(
-    'Ink · Concert',
-    inkControls({ size: 1.7, speed: 1.15, rotation: -18 }),
-    { collapsed: true },
-  )
-  const eyes = useControls(
-    'Ink · Mia star',
-    inkControls({ size: 1.5, speed: 0.95, rotation: 22 }),
-    { collapsed: true },
-  )
-
-  const inkSettings = {
-    portrait,
-    window: windowInk,
-    concert,
-    eyes,
-  }
 
   useEffect(() => {
     const root = rootRef.current
@@ -228,7 +183,7 @@ export default function Hero() {
       </div>
 
       <DecorativeLines />
-      <HeroCollage ref={inkRef} inkSettings={inkSettings} />
+      <HeroCollage ref={inkRef} inkSettings={INK_SETTINGS} />
       <HeroNav />
       <HeroCopy />
       <MoonScroll />
