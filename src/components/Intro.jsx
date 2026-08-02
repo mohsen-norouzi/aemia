@@ -18,18 +18,24 @@ const CENTER_STAR = {
 export default function Intro({ onEnterClick, onEnterComplete }) {
   const rootRef = useRef(null)
   const leavingRef = useRef(false)
+  const hoverRef = useRef(false)
+  const animRef = useRef({
+    spin: null,
+    blink: null,
+    glitchTimer: null,
+    glitchTl: null,
+  })
 
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
 
-    let glitchTimer = null
-
     const ctx = gsap.context(() => {
       const compass = root.querySelector('[data-intro-compass]')
-      const spin = root.querySelector('[data-intro-compass-spin]')
+      const spinEl = root.querySelector('[data-intro-compass-spin]')
       const ghostR = root.querySelector('[data-intro-ghost="r"]')
       const ghostB = root.querySelector('[data-intro-ghost="b"]')
+      const star = root.querySelector('[data-intro-star]')
 
       gsap.from('[data-intro]', {
         opacity: 0,
@@ -38,8 +44,7 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         ease: 'power2.out',
       })
 
-      // Slow continuous spin (whole stack)
-      gsap.to(spin, {
+      const spin = gsap.to(spinEl, {
         rotation: 360,
         duration: 90,
         ease: 'none',
@@ -47,7 +52,6 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         transformOrigin: '50% 50%',
       })
 
-      // Super subtle, slow blink
       const blink = gsap.to(compass, {
         opacity: COMPASS.opacity * 0.92,
         duration: 4.5,
@@ -56,7 +60,11 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         ease: 'sine.inOut',
       })
 
+      animRef.current.spin = spin
+      animRef.current.blink = blink
+
       const resetGlitch = () => {
+        if (hoverRef.current) return
         gsap.set(compass, {
           x: 0,
           y: 0,
@@ -64,30 +72,34 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
           filter: 'none',
           opacity: COMPASS.opacity,
         })
-        gsap.set([ghostR, ghostB], {
-          opacity: 0,
-          x: 0,
-          y: 0,
-        })
+        gsap.set([ghostR, ghostB], { opacity: 0, x: 0, y: 0 })
+      }
+
+      const scheduleGlitch = () => {
+        animRef.current.glitchTimer?.kill()
+        if (leavingRef.current || hoverRef.current) return
+        animRef.current.glitchTimer = gsap.delayedCall(
+          gsap.utils.random(2.6, 7.2),
+          runGlitch,
+        )
       }
 
       const runGlitch = () => {
-        if (leavingRef.current || !compass) return
+        if (leavingRef.current || hoverRef.current || !compass) return
 
         blink.pause()
 
         const tl = gsap.timeline({
           onComplete: () => {
+            animRef.current.glitchTl = null
+            if (hoverRef.current) return
             resetGlitch()
             blink.invalidate().restart(true)
-            glitchTimer = gsap.delayedCall(
-              gsap.utils.random(2.6, 7.2),
-              runGlitch,
-            )
+            scheduleGlitch()
           },
         })
+        animRef.current.glitchTl = tl
 
-        // Blink burst
         tl.to(compass, { opacity: 0.08, duration: 0.035, ease: 'none' })
           .to(compass, {
             opacity: Math.min(1, COMPASS.opacity * 1.25),
@@ -95,8 +107,6 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
             ease: 'none',
           })
           .to(compass, { opacity: 0.2, duration: 0.03, ease: 'none' })
-
-          // Color / channel glitch
           .to(
             compass,
             {
@@ -118,8 +128,6 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
             ease: 'none',
           })
           .to([ghostR, ghostB], { opacity: 0, duration: 0.04 }, '<')
-
-          // Second micro flicker
           .to(compass, {
             opacity: 0.12,
             filter: 'hue-rotate(40deg) brightness(1.4)',
@@ -138,11 +146,89 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
           })
       }
 
-      glitchTimer = gsap.delayedCall(gsap.utils.random(1.8, 3.5), runGlitch)
+      animRef.current.glitchTimer = gsap.delayedCall(
+        gsap.utils.random(1.8, 3.5),
+        runGlitch,
+      )
+
+      // Hover API used by button handlers
+      animRef.current.onEnterHover = () => {
+        hoverRef.current = true
+        animRef.current.glitchTimer?.kill()
+        animRef.current.glitchTl?.kill()
+        spin.pause()
+        blink.pause()
+
+        gsap.to(compass, {
+          opacity: 0.95,
+          filter: 'brightness(1.25) contrast(1.05)',
+          x: 0,
+          y: 0,
+          skewX: 0,
+          duration: 0.35,
+          ease: 'power2.out',
+          overwrite: true,
+        })
+        gsap.to([ghostR, ghostB], { opacity: 0, duration: 0.2 })
+        gsap.to(star, {
+          opacity: 1,
+          scale: 1.08,
+          duration: 0.35,
+          ease: 'power2.out',
+        })
+        gsap.to('[data-enter-label]', {
+          letterSpacing: '0.72em',
+          opacity: 1,
+          duration: 0.35,
+          ease: 'power2.out',
+        })
+        gsap.to('[data-enter-arrow]', {
+          x: 6,
+          opacity: 1,
+          duration: 0.35,
+          ease: 'power2.out',
+        })
+      }
+
+      animRef.current.onLeaveHover = () => {
+        if (leavingRef.current) return
+        hoverRef.current = false
+
+        gsap.to(compass, {
+          opacity: COMPASS.opacity,
+          filter: 'none',
+          duration: 0.4,
+          ease: 'power2.out',
+          overwrite: true,
+        })
+        gsap.to(star, {
+          opacity: CENTER_STAR.opacity,
+          scale: 1,
+          duration: 0.4,
+          ease: 'power2.out',
+        })
+        gsap.to('[data-enter-label]', {
+          letterSpacing: '0.55em',
+          opacity: 1,
+          duration: 0.35,
+          ease: 'power2.out',
+        })
+        gsap.to('[data-enter-arrow]', {
+          x: 0,
+          opacity: 0.8,
+          duration: 0.35,
+          ease: 'power2.out',
+        })
+
+        spin.resume()
+        blink.invalidate().restart(true)
+        scheduleGlitch()
+      }
     }, root)
 
     return () => {
-      glitchTimer?.kill()
+      animRef.current.glitchTimer?.kill()
+      animRef.current.glitchTl?.kill()
       ctx.revert()
     }
   }, [])
@@ -151,6 +237,11 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
     e.preventDefault()
     if (leavingRef.current) return
     leavingRef.current = true
+    hoverRef.current = true
+    animRef.current.glitchTimer?.kill()
+    animRef.current.glitchTl?.kill()
+    animRef.current.spin?.pause()
+    animRef.current.blink?.pause()
 
     onEnterClick?.()
 
@@ -224,6 +315,7 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
       </div>
 
       <div
+        data-intro-star
         className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-1/2"
         style={{
           left: `${CENTER_STAR.left}%`,
@@ -261,13 +353,24 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         data-intro
         type="button"
         onClick={handleEnter}
-        className="absolute left-1/2 top-1/2 z-30 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center outline-none"
+        onMouseEnter={() => animRef.current.onEnterHover?.()}
+        onMouseLeave={() => animRef.current.onLeaveHover?.()}
+        onFocus={() => animRef.current.onEnterHover?.()}
+        onBlur={() => animRef.current.onLeaveHover?.()}
+        className="group absolute left-1/2 top-1/2 z-30 flex h-[min(58vw,280px)] w-[min(58vw,280px)] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full outline-none"
         aria-label="Enter Aemia"
       >
-        <span className="font-body text-[0.72rem] font-medium tracking-[0.55em] text-aemia-bone md:text-[0.8rem]">
+        <span
+          data-enter-label
+          className="font-body text-[0.72rem] font-medium tracking-[0.55em] text-aemia-bone transition-colors md:text-[0.8rem]"
+        >
           ENTER AEMIA
         </span>
-        <span className="mt-3 text-sm text-aemia-bone/80" aria-hidden>
+        <span
+          data-enter-arrow
+          className="mt-3 text-sm text-aemia-bone/80"
+          aria-hidden
+        >
           →
         </span>
       </button>

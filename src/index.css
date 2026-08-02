@@ -44,6 +44,15 @@ main {
   overflow: hidden;
 }
 
+a,
+button,
+[role='button'],
+.listen-btn,
+.nav-link,
+.section-dot {
+  cursor: pointer;
+}
+
 ::selection {
   background: var(--color-aemia-moss);
   color: white;
