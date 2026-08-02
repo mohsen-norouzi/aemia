@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 /**
  * Occasional mgGlitch-style bursts while music plays (after ink).
- * Between bursts the image is fully normal — no overlay layers.
+ * Each glitch host runs on its own random schedule — never all at once.
  */
 
 const GLITCH_SEL = '[data-glitch]'
@@ -135,58 +135,76 @@ export function useMusicGlitch(enabled, scopeRef, settings = {}) {
     if (!root || !enabled || amount <= 0.01) return undefined
 
     let disposed = false
-    let scheduleTimer = 0
-    let activeCleanups = []
+    const timers = new Map()
+    const cleanups = new Map()
 
-    const clearActive = () => {
-      activeCleanups.forEach((fn) => fn?.())
-      activeCleanups = []
+    const clearHost = (host) => {
+      window.clearTimeout(timers.get(host))
+      timers.delete(host)
+      cleanups.get(host)?.()
+      cleanups.delete(host)
     }
 
-    const fire = () => {
+    const scheduleHost = (host) => {
       if (disposed) return
-      clearActive()
+      const s = settingsRef.current
+      const every = Math.max(0.5, s.everySeconds ?? everySeconds)
+      // Wide per-host jitter so images never sync
+      const wait = (every * (0.55 + Math.random() * 1.6) + Math.random() * 1.2) * 1000
+      timers.set(
+        host,
+        window.setTimeout(() => fireHost(host), Math.max(300, wait)),
+      )
+    }
 
-      const hosts = Array.from(root.querySelectorAll(GLITCH_SEL))
-      if (!hosts.length) {
-        schedule()
+    const fireHost = (host) => {
+      if (disposed) return
+      if (!root.contains(host)) {
+        clearHost(host)
         return
       }
 
-      // Glitch 1–all hosts in this burst (random subset feels less synced)
-      const count = Math.max(
-        1,
-        Math.min(hosts.length, Math.round(1 + Math.random() * hosts.length)),
+      // Skip if still mid-burst
+      if (host.classList.contains('is-mg-glitching')) {
+        scheduleHost(host)
+        return
+      }
+
+      // ~30% chance to skip this tick — keeps it sparse/random
+      if (Math.random() < 0.3) {
+        scheduleHost(host)
+        return
+      }
+
+      const s = settingsRef.current
+      const burst = Math.max(
+        120,
+        (s.burstMs ?? burstMs) * (0.7 + Math.random() * 0.7),
       )
-      const shuffled = [...hosts].sort(() => Math.random() - 0.5)
-      const picked = shuffled.slice(0, count)
-
-      const s = settingsRef.current
-      picked.forEach((host) => {
-        activeCleanups.push(
-          runBurst(host, s.amount ?? amount, s.burstMs ?? burstMs),
-        )
-      })
-
-      schedule()
+      cleanups.set(
+        host,
+        runBurst(host, s.amount ?? amount, burst),
+      )
+      scheduleHost(host)
     }
 
-    const schedule = () => {
-      if (disposed) return
-      const s = settingsRef.current
-      const every = Math.max(0.4, s.everySeconds ?? everySeconds)
-      // Small jitter so it doesn't feel metronomic
-      const wait = (every + (Math.random() * 0.6 - 0.3)) * 1000
-      scheduleTimer = window.setTimeout(fire, Math.max(200, wait))
-    }
-
-    // First burst after a short delay (not immediately on ink end)
-    scheduleTimer = window.setTimeout(fire, Math.max(400, everySeconds * 400))
+    const hosts = Array.from(root.querySelectorAll(GLITCH_SEL))
+    hosts.forEach((host, i) => {
+      // Stagger first fire so nothing starts together
+      const firstWait = 400 + i * rand(350, 900) + Math.random() * 1200
+      timers.set(
+        host,
+        window.setTimeout(() => fireHost(host), firstWait),
+      )
+    })
 
     return () => {
       disposed = true
-      window.clearTimeout(scheduleTimer)
-      clearActive()
+      hosts.forEach(clearHost)
+      timers.forEach((id) => window.clearTimeout(id))
+      cleanups.forEach((fn) => fn?.())
+      timers.clear()
+      cleanups.clear()
     }
   }, [enabled, scopeRef, amount, everySeconds, burstMs])
 }
