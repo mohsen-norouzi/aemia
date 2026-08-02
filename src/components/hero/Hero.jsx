@@ -11,7 +11,6 @@ function MoonScroll() {
       className="absolute bottom-7 left-6 z-30 flex items-end gap-5 md:bottom-9 md:left-10 md:gap-7"
       data-ui="scroll"
     >
-      {/* SCROLL stacked over short vertical tick */}
       <div className="flex flex-col items-start gap-2">
         <span className="font-body text-[0.5rem] tracking-[0.38em] text-aemia-fog/85">
           SCROLL
@@ -19,7 +18,6 @@ function MoonScroll() {
         <div className="ml-[0.12rem] h-5 w-px bg-white/55 md:h-6" />
       </div>
 
-      {/* Horizontal rule → moon */}
       <div className="mb-[9px] flex items-center md:mb-[11px]">
         <div className="h-px w-24 bg-white/50 md:w-36" />
         <img
@@ -40,8 +38,6 @@ export default function Hero() {
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
-
-    let onMove = null
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
@@ -92,8 +88,7 @@ export default function Hero() {
           '[data-collage]',
           {
             opacity: 0,
-            scale: 1.04,
-            y: 24,
+            y: 28,
             duration: 0.9,
             stagger: { each: 0.07, from: 'center' },
             ease: 'power2.out',
@@ -106,30 +101,6 @@ export default function Hero() {
           '-=0.45',
         )
 
-      gsap.to('[data-collage="compass"]', {
-        rotation: 360,
-        duration: 80,
-        repeat: -1,
-        ease: 'none',
-      })
-
-      gsap.to('[data-collage="quote"]', {
-        y: '+=8',
-        duration: 3.5,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      })
-
-      gsap.to('[data-collage="spray"]', {
-        y: '+=6',
-        x: '+=3',
-        duration: 4.2,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      })
-
       gsap.to('.sw-bar', {
         scaleY: () => gsap.utils.random(0.4, 1.4),
         transformOrigin: 'center center',
@@ -139,31 +110,9 @@ export default function Hero() {
         ease: 'sine.inOut',
         stagger: 0.05,
       })
-
-      const layers = gsap.utils.toArray('.parallax-layer')
-      onMove = (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2
-        const y = (e.clientY / window.innerHeight - 0.5) * 2
-
-        layers.forEach((el) => {
-          const depth = Number(el.dataset.depth || 0.3)
-          gsap.to(el, {
-            x: x * depth * 28,
-            y: y * depth * 18,
-            duration: 0.9,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          })
-        })
-      }
-
-      window.addEventListener('mousemove', onMove)
     }, root)
 
-    return () => {
-      if (onMove) window.removeEventListener('mousemove', onMove)
-      ctx.revert()
-    }
+    return () => ctx.revert()
   }, [])
 
   return (
@@ -172,7 +121,6 @@ export default function Hero() {
       id="top"
       className="relative h-svh max-h-svh w-full overflow-hidden bg-aemia-black text-aemia-bone"
     >
-      {/* Hero background — as-is */}
       <div className="pointer-events-none absolute inset-0">
         <img
           src="/img/bg.png"

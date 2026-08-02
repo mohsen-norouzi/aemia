@@ -1,28 +1,27 @@
 import { Compass, Waveform } from './Decorative'
 
-const GIRL_WINDOW_FADE = {
-  top: 19,
-  topLeft: 32.5,
-  topRight: 32,
+const GIRL_WINDOW = {
+  width: 226,
+  height: 294,
+  left: 35.5,
+  top: 50.5,
+  opacity: 1,
+  rotate: 0,
 }
 
-const girlWindowMask = {
-  WebkitMaskImage: [
-    `linear-gradient(to bottom, transparent 0%, black ${GIRL_WINDOW_FADE.top}%)`,
-    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topLeft}% ${GIRL_WINDOW_FADE.topLeft * 0.85}% at 0% 0%, transparent 0%, transparent 55%, black 100%)`,
-    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topRight}% ${GIRL_WINDOW_FADE.topRight * 0.85}% at 100% 0%, transparent 0%, transparent 55%, black 100%)`,
-  ].join(', '),
-  maskImage: [
-    `linear-gradient(to bottom, transparent 0%, black ${GIRL_WINDOW_FADE.top}%)`,
-    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topLeft}% ${GIRL_WINDOW_FADE.topLeft * 0.85}% at 0% 0%, transparent 0%, transparent 55%, black 100%)`,
-    `radial-gradient(ellipse ${GIRL_WINDOW_FADE.topRight}% ${GIRL_WINDOW_FADE.topRight * 0.85}% at 100% 0%, transparent 0%, transparent 55%, black 100%)`,
-  ].join(', '),
-  WebkitMaskComposite: 'source-in, source-in',
-  maskComposite: 'intersect',
-  WebkitMaskRepeat: 'no-repeat',
-  maskRepeat: 'no-repeat',
-  WebkitMaskSize: '100% 100%',
-  maskSize: '100% 100%',
+const GIRL_FRAME = {
+  width: 284,
+  height: 446,
+  left: 34,
+  top: 40,
+  opacity: 1,
+  rotate: 0,
+}
+
+const GIRL_WINDOW_FADE = {
+  top: 39,
+  topLeft: 50,
+  topRight: 53,
 }
 
 export default function HeroCollage() {
@@ -36,9 +35,9 @@ export default function HeroCollage() {
       >
         <div className="overflow-hidden">
           <img
-            src="/img/girl-1.jpg"
+            src="/img/hero-portrait.png"
             alt="Aemia"
-            className="aspect-[3/4] h-full w-full object-cover object-[center_20%] brightness-[0.85] contrast-[1.05] saturate-[0.75]"
+            className="aspect-[3/4] h-full w-full object-cover object-center"
           />
         </div>
         <div className="absolute -left-3 top-[18%] h-px w-8 bg-white/50" />
@@ -82,19 +81,45 @@ export default function HeroCollage() {
         data-depth="0.45"
         data-collage="mia"
         style={{
-          left: '35.5%',
-          top: '50.5%',
-          width: 244,
-          opacity: 1,
+          left: `${GIRL_WINDOW.left}%`,
+          top: `${GIRL_WINDOW.top}%`,
+          width: GIRL_WINDOW.width,
+          height: GIRL_WINDOW.height,
+          opacity: GIRL_WINDOW.opacity,
         }}
       >
-        <img
-          src="/img/girl-window.png"
-          alt=""
-          className="block h-auto w-full select-none"
-          style={girlWindowMask}
-          draggable={false}
-        />
+        <div
+          className="relative h-full w-full"
+          style={{ transform: `rotate(${GIRL_WINDOW.rotate}deg)` }}
+        >
+          <img
+            src="/img/girl-window.png"
+            alt=""
+            className="block h-full w-full select-none object-cover"
+            draggable={false}
+          />
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black to-transparent"
+            style={{ height: `${GIRL_WINDOW_FADE.top}%` }}
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute left-0 top-0 bg-[radial-gradient(ellipse_at_top_left,black_0%,transparent_70%)]"
+            style={{
+              width: `${GIRL_WINDOW_FADE.topLeft}%`,
+              height: `${GIRL_WINDOW_FADE.topLeft * 0.85}%`,
+            }}
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute right-0 top-0 bg-[radial-gradient(ellipse_at_top_right,black_0%,transparent_70%)]"
+            style={{
+              width: `${GIRL_WINDOW_FADE.topRight}%`,
+              height: `${GIRL_WINDOW_FADE.topRight * 0.85}%`,
+            }}
+            aria-hidden
+          />
+        </div>
       </div>
 
       {/* Girl window frame */}
@@ -103,16 +128,18 @@ export default function HeroCollage() {
         data-depth="0.45"
         data-collage="frame"
         style={{
-          left: '34%',
-          top: '40%',
-          width: 300,
-          opacity: 1,
+          left: `${GIRL_FRAME.left}%`,
+          top: `${GIRL_FRAME.top}%`,
+          width: GIRL_FRAME.width,
+          height: GIRL_FRAME.height,
+          opacity: GIRL_FRAME.opacity,
         }}
       >
         <img
           src="/img/girl-window-frame.png"
           alt=""
-          className="block h-auto w-full select-none"
+          className="block h-full w-full select-none object-fill"
+          style={{ transform: `rotate(${GIRL_FRAME.rotate}deg)` }}
           draggable={false}
           aria-hidden
         />
