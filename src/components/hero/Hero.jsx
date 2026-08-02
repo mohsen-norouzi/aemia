@@ -25,6 +25,20 @@ const PORTRAIT_LAYOUT = {
   left: 45.5,
 }
 
+const STAR_SHINE = {
+  left: 82,
+  top: 32,
+  scale: 170,
+  opacity: 0.57,
+}
+
+const STAR_CIRCLE = {
+  left: 39.5,
+  top: 3,
+  scale: 520,
+  opacity: 0.5,
+}
+
 const GLITCH_SETTINGS = {
   amount: 0.35,
   everySeconds: 5,
@@ -268,6 +282,8 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
         ref={inkRef}
         inkSettings={INK_SETTINGS}
         portraitLayout={PORTRAIT_LAYOUT}
+        starShine={STAR_SHINE}
+        starCircle={STAR_CIRCLE}
         onInkReady={onInkReady}
       />
       <HeroNav playing={playing} />

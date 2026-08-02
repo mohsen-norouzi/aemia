@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import gsap from 'gsap'
-import { Compass, Waveform } from './Decorative'
+import { Waveform } from './Decorative'
 import InkRevealPortrait, { INK_REVEAL } from './InkRevealPortrait'
 
 const GIRL_WINDOW = {
@@ -33,18 +33,16 @@ const DEFAULT_INK = {
   rotation: INK_REVEAL.rotation,
 }
 
-const STAR_CIRCLE = {
-  left: 22.5,
-  top: 3,
-  width: 520,
-  opacity: 0.72,
-  rotate: 0,
-}
-
 const INK_COUNT = 4
 
 const HeroCollage = forwardRef(function HeroCollage(
-  { inkSettings = {}, portraitLayout = {}, onInkReady },
+  {
+    inkSettings = {},
+    portraitLayout = {},
+    starShine = {},
+    starCircle = {},
+    onInkReady,
+  },
   inkRef,
 ) {
   const mainInkRef = useRef(null)
@@ -70,6 +68,20 @@ const HeroCollage = forwardRef(function HeroCollage(
     top: portraitTop = 1,
     left: portraitLeft = 45.5,
   } = portraitLayout
+
+  const {
+    left: shineLeft = 82,
+    top: shineTop = 32,
+    scale: shineScale = 170,
+    opacity: shineOpacity = 0.57,
+  } = starShine
+
+  const {
+    left: circleLeft = 39.5,
+    top: circleTop = 3,
+    scale: circleScale = 520,
+    opacity: circleOpacity = 0.5,
+  } = starCircle
 
   // Full frame is 9/16; heightShow crops how much vertical of that frame is visible
   const portraitAspectH = (16 * heightShow) / 100
@@ -186,26 +198,23 @@ const HeroCollage = forwardRef(function HeroCollage(
 
   return (
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
-      {/* Star circle — locked behind girl images */}
+      {/* Star circle */}
       <div
         className="parallax-layer absolute z-0 opacity-0"
         data-depth="0.2"
         data-collage="star-circle"
         data-fade-shape="star-circle"
         style={{
-          left: `${STAR_CIRCLE.left}%`,
-          top: `${STAR_CIRCLE.top}%`,
-          width: STAR_CIRCLE.width,
+          left: `${circleLeft}%`,
+          top: `${circleTop}%`,
+          width: circleScale,
         }}
       >
         <img
           src="/img/star-circle.png"
           alt=""
-          className="h-auto w-full select-none"
-          style={{
-            opacity: STAR_CIRCLE.opacity,
-            transform: `rotate(${STAR_CIRCLE.rotate}deg)`,
-          }}
+          className="h-auto w-full select-none mix-blend-screen"
+          style={{ opacity: circleOpacity }}
           draggable={false}
           aria-hidden
         />
@@ -421,14 +430,26 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Compass / star */}
+      {/* Star shine */}
       <div
-        className="parallax-layer absolute right-[2%] top-[42%] z-[5] w-[140px] opacity-0 md:right-[4%] md:top-[40%] md:w-[170px]"
+        className="parallax-layer absolute z-[5] opacity-0"
         data-depth="0.9"
         data-collage="compass"
         data-fade-shape="star"
+        style={{
+          left: `${shineLeft}%`,
+          top: `${shineTop}%`,
+          width: shineScale,
+        }}
       >
-        <Compass className="h-full w-full opacity-80" />
+        <img
+          src="/img/star-shine.png"
+          alt=""
+          className="h-auto w-full select-none mix-blend-screen"
+          style={{ opacity: shineOpacity }}
+          draggable={false}
+          aria-hidden
+        />
       </div>
 
       {/* Handwritten quote */}
