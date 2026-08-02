@@ -202,6 +202,10 @@ const HeroCollage = forwardRef(function HeroCollage(
     chromeFallbackRef.current = gsap.delayedCall(3.2, revealChrome)
   }, [revealChrome])
 
+  const onMainComplete = useCallback(() => {
+    markInkDone()
+  }, [markInkDone])
+
   const onMiaComplete = useCallback(() => {
     markInkDone()
     revealChrome()
@@ -245,31 +249,62 @@ const HeroCollage = forwardRef(function HeroCollage(
 
   return (
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
-      {/* Star circle */}
+      {/*
+        Star underlay — own stacking context BELOW the girl.
+        mix-blend-screen stays inside this layer so it never paints over the portrait.
+      */}
       <div
-        className="parallax-layer absolute z-0 opacity-0"
-        data-depth="0.2"
-        data-collage="star-circle"
-        data-fade-shape="star-circle"
-        style={{
-          left: `${circleLeft}%`,
-          top: `${circleTop}%`,
-          width: circleScale,
-        }}
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{ isolation: 'isolate' }}
       >
-        <img
-          src="/img/star-circle.png"
-          alt=""
-          className="h-auto w-full select-none mix-blend-screen"
-          style={{ opacity: circleOpacity }}
-          draggable={false}
-          aria-hidden
-        />
+        <div
+          className="parallax-layer absolute opacity-0"
+          data-depth="0.2"
+          data-collage="star-circle"
+          data-fade-shape="star-circle"
+          style={{
+            left: `${circleLeft}%`,
+            top: `${circleTop}%`,
+            width: circleScale,
+          }}
+        >
+          <img
+            src="/img/star-circle.png"
+            alt=""
+            className="h-auto w-full select-none mix-blend-screen"
+            style={{ opacity: circleOpacity }}
+            draggable={false}
+            aria-hidden
+          />
+        </div>
+
+        <div
+          className="parallax-layer absolute opacity-0"
+          data-depth="0.9"
+          data-collage="compass"
+          data-fade-shape="star"
+          style={{
+            left: `${shineLeft}%`,
+            top: `${shineTop}%`,
+            width: shineScale,
+          }}
+        >
+          <img
+            src="/img/star-shine.png"
+            alt=""
+            className={`star-shine-spin h-auto w-full select-none mix-blend-screen ${playing ? 'is-ticking' : ''}`}
+            style={{ opacity: shineOpacity }}
+            draggable={false}
+            aria-hidden
+          />
+        </div>
       </div>
 
-      {/* Main portrait — taller natural ratio, brush foot fade into page */}
+      {/* Foreground collage — always above stars */}
+      <div className="pointer-events-none absolute inset-0 z-[1]">
+      {/* Main portrait */}
       <div
-        className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[2] min-w-[160px] overflow-hidden"
+        className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[3] min-w-[160px] overflow-hidden"
         style={{
           left: `${portraitLeft}%`,
           top: `${portraitTop}%`,
@@ -297,7 +332,7 @@ const HeroCollage = forwardRef(function HeroCollage(
           size={portrait.size}
           speed={portrait.speed}
           rotation={portrait.rotation}
-          onComplete={markInkDone}
+          onComplete={onMainComplete}
           imgClassName="h-full w-full object-cover object-top"
           style={{ aspectRatio: `9 / ${portraitAspectH}` }}
         />
@@ -487,28 +522,6 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Star shine — behind portrait only */}
-      <div
-        className="parallax-layer absolute z-[1] opacity-0"
-        data-depth="0.9"
-        data-collage="compass"
-        data-fade-shape="star"
-        style={{
-          left: `${shineLeft}%`,
-          top: `${shineTop}%`,
-          width: shineScale,
-        }}
-      >
-        <img
-          src="/img/star-shine.png"
-          alt=""
-          className={`star-shine-spin h-auto w-full select-none mix-blend-screen ${playing ? 'is-ticking' : ''}`}
-          style={{ opacity: shineOpacity }}
-          draggable={false}
-          aria-hidden
-        />
-      </div>
-
       {/* Handwritten quote */}
       <div
         className="parallax-layer absolute right-[10%] top-[54%] z-[5] max-w-[200px] rotate-[-2deg] opacity-0 md:right-[14%] md:top-[56%] md:max-w-[220px]"
@@ -610,6 +623,7 @@ const HeroCollage = forwardRef(function HeroCollage(
           alt=""
           className="aspect-[3/4] w-full object-cover brightness-[0.7] grayscale"
         />
+      </div>
       </div>
     </div>
   )
