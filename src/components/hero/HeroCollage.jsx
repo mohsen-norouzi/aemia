@@ -44,7 +44,7 @@ const STAR_CIRCLE = {
 const INK_COUNT = 4
 
 const HeroCollage = forwardRef(function HeroCollage(
-  { inkSettings = {}, onInkReady },
+  { inkSettings = {}, portraitLayout = {}, onInkReady },
   inkRef,
 ) {
   const mainInkRef = useRef(null)
@@ -60,6 +60,19 @@ const HeroCollage = forwardRef(function HeroCollage(
   const windowInk = { ...DEFAULT_INK, ...inkSettings.window }
   const concert = { ...DEFAULT_INK, ...inkSettings.concert }
   const eyes = { ...DEFAULT_INK, ...inkSettings.eyes }
+
+  const {
+    width: portraitWidth = 60,
+    maxWidth: portraitMaxWidth = 488,
+    heightShow = 93,
+    opacity: portraitOpacity = 0.85,
+    blendFade = 60,
+    top: portraitTop = 1,
+    left: portraitLeft = 45.5,
+  } = portraitLayout
+
+  // Full frame is 9/16; heightShow crops how much vertical of that frame is visible
+  const portraitAspectH = (16 * heightShow) / 100
 
   const resetInkReady = useCallback(() => {
     inkDoneRef.current = 0
@@ -198,9 +211,16 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Main portrait */}
+      {/* Main portrait — taller natural ratio, black bg soft-blends into page */}
       <div
-        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] z-[3] w-[46%] max-w-[420px] min-w-[160px] overflow-hidden sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
+        className="parallax-layer rough-frame is-waiting-border portrait-blend absolute z-[3] min-w-[160px] overflow-hidden"
+        style={{
+          left: `${portraitLeft}%`,
+          top: `${portraitTop}%`,
+          width: `${portraitWidth}%`,
+          maxWidth: portraitMaxWidth,
+          opacity: portraitOpacity,
+        }}
         data-depth="0.35"
         data-collage="main"
         data-ink
@@ -216,6 +236,8 @@ const HeroCollage = forwardRef(function HeroCollage(
           speed={portrait.speed}
           rotation={portrait.rotation}
           onComplete={markInkDone}
+          imgClassName="h-full w-full object-cover object-top"
+          style={{ aspectRatio: `9 / ${portraitAspectH}` }}
         />
         <div
           className="pointer-events-none absolute inset-0 opacity-0"
@@ -227,23 +249,28 @@ const HeroCollage = forwardRef(function HeroCollage(
           <div className="absolute -bottom-2 left-[12%] h-px w-16 bg-white/35" />
           <div className="absolute bottom-[20%] -right-5 h-px w-10 bg-white/40" />
         </div>
+        <div
+          className="portrait-blend-fade"
+          style={{ height: `${blendFade}%` }}
+          aria-hidden
+        />
       </div>
 
-      {/* Concert inset — ink */}
+      {/* Kurosh inset — ink */}
       <div
-        className="parallax-layer absolute right-[6%] top-[10%] z-[5] w-[18%] max-w-[200px] min-w-[110px] overflow-hidden border border-white/20 md:right-[9%] md:top-[12%]"
+        className="parallax-layer absolute right-[6%] top-[8%] z-[5] w-[15%] max-w-[170px] min-w-[96px] overflow-hidden border border-white/20 md:right-[9%] md:top-[10%]"
         data-depth="0.55"
         data-collage="concert"
         data-ink
         data-glitch
-        data-glitch-src="/img/concert.jpg"
+        data-glitch-src="/img/kurosh.png"
       >
-        <div className="brightness-[0.7] contrast-[1.1] hue-rotate-[190deg] saturate-[0.6]">
+        <div className="brightness-[0.72] contrast-[1.2] saturate-[0.35]">
           <InkRevealPortrait
             ref={concertInkRef}
-            imageUrl="/img/concert.jpg"
+            imageUrl="/img/kurosh.png"
             className="w-full"
-            imgClassName="aspect-[4/3] w-full object-cover"
+            imgClassName="aspect-[4/5] w-full object-cover object-[center_18%]"
             {...baseInk}
             size={concert.size}
             speed={concert.speed}
@@ -251,7 +278,8 @@ const HeroCollage = forwardRef(function HeroCollage(
             onComplete={markInkDone}
           />
         </div>
-        <div className="absolute inset-0 bg-sky-900/25 mix-blend-color" />
+        <div className="absolute inset-0 bg-[#66846b]/25 mix-blend-color" />
+        <div className="absolute inset-0 bg-black/20 mix-blend-multiply" />
       </div>
 
       {/* Eyes strip — ink */}

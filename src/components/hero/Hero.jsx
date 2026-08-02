@@ -15,6 +15,16 @@ const INK_SETTINGS = {
   eyes: { size: 1.5, speed: 0.95, rotation: 22 },
 }
 
+const PORTRAIT_LAYOUT = {
+  width: 60,
+  maxWidth: 488,
+  heightShow: 93,
+  opacity: 0.85,
+  blendFade: 60,
+  top: 1,
+  left: 45.5,
+}
+
 const GLITCH_SETTINGS = {
   amount: 0.35,
   everySeconds: 5,
@@ -257,6 +267,7 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
       <HeroCollage
         ref={inkRef}
         inkSettings={INK_SETTINGS}
+        portraitLayout={PORTRAIT_LAYOUT}
         onInkReady={onInkReady}
       />
       <HeroNav playing={playing} />

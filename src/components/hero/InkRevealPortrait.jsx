@@ -28,6 +28,7 @@ const InkRevealPortrait = forwardRef(function InkRevealPortrait(
     onComplete,
     className = '',
     imgClassName = 'aspect-[3/4] h-full w-full object-cover object-center',
+    style,
     alt = '',
   },
   ref,
@@ -48,7 +49,7 @@ const InkRevealPortrait = forwardRef(function InkRevealPortrait(
   useImperativeHandle(ref, () => ({ replay, reveal }), [replay, reveal])
 
   return (
-    <div className={`relative overflow-hidden ${className}`.trim()}>
+    <div className={`relative overflow-hidden ${className}`.trim()} style={style}>
       <img
         src={imageUrl}
         alt={alt}
