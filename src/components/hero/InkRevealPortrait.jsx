@@ -25,6 +25,7 @@ const InkRevealPortrait = forwardRef(function InkRevealPortrait(
     speed = INK_REVEAL.speed,
     rotation = INK_REVEAL.rotation,
     autoPlay = false,
+    onComplete,
     className = '',
     imgClassName = 'aspect-[3/4] h-full w-full object-cover object-center',
     alt = '',
@@ -41,6 +42,7 @@ const InkRevealPortrait = forwardRef(function InkRevealPortrait(
     speed,
     rotation,
     autoPlay,
+    onComplete,
   })
 
   useImperativeHandle(ref, () => ({ replay, reveal }), [replay, reveal])

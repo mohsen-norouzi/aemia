@@ -19,7 +19,7 @@ export default function HeroCopy() {
       </p>
 
       <div className="relative w-full" data-copy="title-wrap">
-        <h1 className="m-0 leading-none" data-copy="title">
+        <h1 className="m-0 leading-none opacity-0" data-copy="title">
           <img
             src="/img/kleptomaniac.png"
             alt="Kleptomaniac"
@@ -29,21 +29,22 @@ export default function HeroCopy() {
         </h1>
 
         <div
-          className="pointer-events-none absolute z-10"
+          className="pointer-events-none absolute z-10 opacity-0"
           data-copy="outnow"
           style={{
             left: '57.5%',
             bottom: '-19%',
             width: '48%',
-            transform: 'rotate(-7deg)',
           }}
         >
-          <img
-            src="/img/out-now.png"
-            alt="Out now"
-            className="h-auto w-full select-none"
-            draggable={false}
-          />
+          <div style={{ transform: 'rotate(-7deg)' }}>
+            <img
+              src="/img/out-now.png"
+              alt="Out now"
+              className="h-auto w-full select-none"
+              draggable={false}
+            />
+          </div>
         </div>
       </div>
 

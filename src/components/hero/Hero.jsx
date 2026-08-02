@@ -51,24 +51,35 @@ export default function Hero() {
   const inkRef = useRef(null)
   const entranceCtxRef = useRef(null)
 
-  useControls('Ink reveals', {
-    replayAll: button(() => {
-      inkRef.current?.replay?.()
-    }),
-  })
+  useControls(
+    'Ink reveals',
+    {
+      replayAll: button(() => {
+        inkRef.current?.replay?.()
+      }),
+    },
+    { collapsed: true },
+  )
 
-  const portrait = useControls('Ink · Portrait', inkControls({ size: 1.4, speed: 1, rotation: -8 }))
+  const portrait = useControls(
+    'Ink · Portrait',
+    inkControls({ size: 1.4, speed: 1, rotation: -8 }),
+    { collapsed: true },
+  )
   const windowInk = useControls(
     'Ink · Window',
     inkControls({ size: 1.55, speed: 0.85, rotation: 12 }),
+    { collapsed: true },
   )
   const concert = useControls(
     'Ink · Concert',
     inkControls({ size: 1.7, speed: 1.15, rotation: -18 }),
+    { collapsed: true },
   )
   const eyes = useControls(
     'Ink · Mia star',
     inkControls({ size: 1.5, speed: 0.95, rotation: 22 }),
+    { collapsed: true },
   )
 
   const inkSettings = {
@@ -88,14 +99,51 @@ export default function Hero() {
 
     entranceCtxRef.current = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-      const otherLayers = gsap.utils.toArray('[data-collage]:not([data-ink])')
+      // Frame / OUT NOW / accent lines are ink-chrome — not in this set
+      const otherLayers = gsap.utils.toArray(
+        '[data-collage="spray"], [data-collage="wave"], [data-collage="peek"]',
+      )
+      const fadeShapes = gsap.utils.toArray('[data-fade-shape]')
 
-      tl.from('[data-nav="logo"]', {
-        y: -20,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.05,
-      })
+      // Hidden until their fade-in — otherwise they flash for the whole intro
+      // Start states already hidden in markup/CSS — only set non-border layers here
+      gsap.set(fadeShapes, { opacity: 0 })
+      gsap.set(otherLayers, { opacity: 0 })
+      gsap.set('[data-copy="title"]', { opacity: 0 })
+
+      // Ink starts with the page entrance (not after nav/copy)
+      if (!reduceMotion) {
+        tl.add(() => {
+          inkRef.current?.replay?.()
+        }, 0)
+      } else {
+        tl.add(() => {
+          inkRef.current?.reveal?.()
+        }, 0)
+      }
+
+      // Window border, star, handwritten text — fade in with the page
+      tl.to(
+        fadeShapes,
+        {
+          opacity: 1,
+          duration: 1.1,
+          stagger: 0.18,
+          ease: 'power2.out',
+        },
+        0.15,
+      )
+
+      tl.from(
+        '[data-nav="logo"]',
+        {
+          y: -20,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.05,
+        },
+        0,
+      )
         .from(
           '[data-nav="link"]',
           { y: -14, opacity: 0, duration: 0.65, stagger: 0.05 },
@@ -111,45 +159,30 @@ export default function Hero() {
           { y: 14, opacity: 0, duration: 0.55 },
           '-=0.35',
         )
-        .from(
-          '[data-copy="title"]',
-          { y: 40, opacity: 0, duration: 1, skewY: 2 },
-          '-=0.3',
-        )
-        .from(
-          '[data-copy="outnow"]',
-          {
-            scale: 1.25,
-            opacity: 0,
-            rotation: -14,
-            duration: 0.65,
-            ease: 'back.out(1.5)',
-          },
-          '-=0.4',
-        )
-        .from(
-          '[data-copy="desc"], [data-copy="btn"]',
-          { y: 16, opacity: 0, duration: 0.6, stagger: 0.1 },
-          '-=0.3',
-        )
+
+      // Title fades in (no flash)
+      tl.to(
+        '[data-copy="title"]',
+        {
+          opacity: 1,
+          duration: 1.15,
+          ease: 'power2.out',
+        },
+        '-=0.25',
+      )
+
+      tl.from(
+        '[data-copy="desc"], [data-copy="btn"]',
+        { y: 16, opacity: 0, duration: 0.6, stagger: 0.1 },
+        '-=0.35',
+      )
 
       tl.addLabel('collage', '-=0.95')
 
-      if (!reduceMotion) {
-        tl.add(() => {
-          inkRef.current?.replay?.()
-        }, 'collage')
-      } else {
-        tl.add(() => {
-          inkRef.current?.reveal?.()
-        }, 'collage')
-      }
-
-      tl.from(
+      tl.to(
         otherLayers,
         {
-          opacity: 0,
-          y: 28,
+          opacity: 1,
           duration: 0.9,
           stagger: { each: 0.07, from: 'center' },
           ease: 'power2.out',

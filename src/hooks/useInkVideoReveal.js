@@ -52,7 +52,7 @@ function rand(min, max) {
 export function buildInkFeel(opts = {}) {
   const extras = opts.randomize !== false
   return {
-    delay: extras ? rand(0, 0.95) : 0,
+    delay: extras ? rand(0, 0.28) : 0,
     rate: opts.speed ?? opts.playbackRate ?? 1,
     flipX: extras ? Math.random() > 0.45 : false,
     flipY: extras ? Math.random() > 0.7 : false,
@@ -83,6 +83,7 @@ export function useInkVideoReveal(hostRef, options) {
     size = 1.35,
     speed = 1,
     rotation = 0,
+    onComplete,
   } = options
 
   const apiRef = useRef(null)
@@ -93,6 +94,7 @@ export function useInkVideoReveal(hostRef, options) {
     size,
     speed,
     rotation,
+    onComplete,
   })
   optsRef.current = {
     invert,
@@ -101,6 +103,7 @@ export function useInkVideoReveal(hostRef, options) {
     size,
     speed,
     rotation,
+    onComplete,
   }
 
   const replay = useCallback(async () => {
@@ -127,6 +130,7 @@ export function useInkVideoReveal(hostRef, options) {
     let onEnded = null
     let finishing = false
     let pendingReplay = false
+    let safetyTimer = null
     let feel = {
       delay: 0,
       rate: 1,
@@ -136,6 +140,13 @@ export function useInkVideoReveal(hostRef, options) {
       ox: 0,
       oy: 0,
       rot: 0,
+    }
+
+    const clearSafety = () => {
+      if (safetyTimer != null) {
+        clearTimeout(safetyTimer)
+        safetyTimer = null
+      }
     }
 
     const safeDestroyApp = () => {
@@ -207,6 +218,7 @@ export function useInkVideoReveal(hostRef, options) {
     const finishOnLastFrame = () => {
       if (disposed || finishing) return
       finishing = true
+      clearSafety()
       try {
         videoEl?.pause()
       } catch {
@@ -219,12 +231,30 @@ export function useInkVideoReveal(hostRef, options) {
       }
       if (photo) photo.alpha = 1
       finishing = false
+      optsRef.current.onComplete?.()
+    }
+
+    const armSafety = () => {
+      clearSafety()
+      const duration =
+        Number.isFinite(videoEl?.duration) && videoEl.duration > 0
+          ? videoEl.duration
+          : 2.8
+      const rate = Math.max(0.2, feel.rate || 1)
+      // Called after delay already waited — only cover video length + buffer
+      const ms = ((duration + 0.45) / rate) * 1000
+      safetyTimer = setTimeout(() => finishOnLastFrame(), ms)
     }
 
     /** Jump to end and hold (reduced-motion / forced reveal) */
     const revealImmediate = async () => {
-      if (disposed || !videoEl || !videoSprite) return
+      if (disposed || !videoEl || !videoSprite) {
+        clearSafety()
+        optsRef.current.onComplete?.()
+        return
+      }
       finishing = false
+      clearSafety()
       const end =
         Number.isFinite(videoEl.duration) && videoEl.duration > 0
           ? Math.max(0, videoEl.duration - 0.05)
@@ -239,6 +269,7 @@ export function useInkVideoReveal(hostRef, options) {
       layout()
       setMaskSprite(videoSprite)
       if (photo) photo.alpha = 1
+      optsRef.current.onComplete?.()
     }
 
     const sleep = (ms) =>
@@ -253,7 +284,7 @@ export function useInkVideoReveal(hostRef, options) {
         return
       }
       finishing = false
-
+      clearSafety()
       feel = buildInkFeel(optsRef.current)
 
       try {
@@ -280,12 +311,13 @@ export function useInkVideoReveal(hostRef, options) {
 
       layout()
       setMaskSprite(videoSprite)
+      armSafety()
 
       try {
         await videoEl.play()
       } catch (err) {
         console.warn('[useInkVideoReveal] play failed', err)
-        maskHidden()
+        await revealImmediate()
       }
     }
 
@@ -425,6 +457,7 @@ export function useInkVideoReveal(hostRef, options) {
 
     return () => {
       disposed = true
+      clearSafety()
       resizeObserver?.disconnect()
       if (videoEl && onEnded) videoEl.removeEventListener('ended', onEnded)
       try {

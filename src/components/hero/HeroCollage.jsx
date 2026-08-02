@@ -1,4 +1,5 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
+import gsap from 'gsap'
 import { Compass, Waveform } from './Decorative'
 import InkRevealPortrait, { INK_REVEAL } from './InkRevealPortrait'
 
@@ -40,16 +41,74 @@ const HeroCollage = forwardRef(function HeroCollage(
   const miaInkRef = useRef(null)
   const concertInkRef = useRef(null)
   const eyesInkRef = useRef(null)
+  const chromeShownRef = useRef(false)
+  const chromeFallbackRef = useRef(null)
 
   const portrait = { ...DEFAULT_INK, ...inkSettings.portrait }
   const windowInk = { ...DEFAULT_INK, ...inkSettings.window }
   const concert = { ...DEFAULT_INK, ...inkSettings.concert }
   const eyes = { ...DEFAULT_INK, ...inkSettings.eyes }
 
+  const revealChrome = useCallback(() => {
+    if (chromeShownRef.current) return
+    chromeShownRef.current = true
+    if (chromeFallbackRef.current) {
+      chromeFallbackRef.current.kill()
+      chromeFallbackRef.current = null
+    }
+    document
+      .querySelector('[data-collage="main"]')
+      ?.classList.remove('is-waiting-border')
+
+    // Frame + accent lines — soft fade
+    gsap.to('[data-collage="frame"], [data-reveal-with-border]', {
+      opacity: 1,
+      duration: 0.85,
+      ease: 'power2.out',
+      overwrite: true,
+    })
+
+    // OUT NOW — scale pop only (no rotation), resting tilt via CSS
+    gsap.fromTo(
+      '[data-copy="outnow"]',
+      { scale: 1.4, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 0.7,
+        ease: 'back.out(1.6)',
+        overwrite: true,
+        transformOrigin: '50% 50%',
+      },
+    )
+  }, [])
+
+  const hideChrome = useCallback(() => {
+    chromeShownRef.current = false
+    if (chromeFallbackRef.current) {
+      chromeFallbackRef.current.kill()
+      chromeFallbackRef.current = null
+    }
+    gsap.set('[data-collage="frame"], [data-reveal-with-border]', {
+      opacity: 0,
+    })
+    gsap.set('[data-copy="outnow"]', {
+      opacity: 0,
+      scale: 1.4,
+      transformOrigin: '50% 50%',
+    })
+    document
+      .querySelector('[data-collage="main"]')
+      ?.classList.add('is-waiting-border')
+    // Hard fallback — never leave chrome stuck hidden if ended never fires
+    chromeFallbackRef.current = gsap.delayedCall(3.2, revealChrome)
+  }, [revealChrome])
+
   useImperativeHandle(
     inkRef,
     () => ({
       replay: async () => {
+        hideChrome()
         await Promise.all([
           mainInkRef.current?.replay?.(),
           miaInkRef.current?.replay?.(),
@@ -64,9 +123,10 @@ const HeroCollage = forwardRef(function HeroCollage(
           concertInkRef.current?.reveal?.(),
           eyesInkRef.current?.reveal?.(),
         ])
+        revealChrome()
       },
     }),
-    [],
+    [hideChrome, revealChrome],
   )
 
   const baseInk = {
@@ -78,7 +138,7 @@ const HeroCollage = forwardRef(function HeroCollage(
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
       {/* Main portrait */}
       <div
-        className="parallax-layer rough-frame absolute left-[48%] top-[28%] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
+        className="parallax-layer rough-frame is-waiting-border absolute left-[48%] top-[28%] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
         data-depth="0.35"
         data-collage="main"
         data-ink
@@ -92,10 +152,16 @@ const HeroCollage = forwardRef(function HeroCollage(
           speed={portrait.speed}
           rotation={portrait.rotation}
         />
-        <div className="absolute -left-3 top-[18%] h-px w-8 bg-white/50" />
-        <div className="absolute -right-4 top-[8%] h-10 w-px bg-white/40" />
-        <div className="absolute -bottom-2 left-[12%] h-px w-16 bg-white/35" />
-        <div className="absolute bottom-[20%] -right-5 h-px w-10 bg-white/40" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0"
+          data-reveal-with-border
+          aria-hidden
+        >
+          <div className="absolute -left-3 top-[18%] h-px w-8 bg-white/50" />
+          <div className="absolute -right-4 top-[8%] h-10 w-px bg-white/40" />
+          <div className="absolute -bottom-2 left-[12%] h-px w-16 bg-white/35" />
+          <div className="absolute bottom-[20%] -right-5 h-px w-10 bg-white/40" />
+        </div>
       </div>
 
       {/* Concert inset — ink */}
@@ -158,8 +224,17 @@ const HeroCollage = forwardRef(function HeroCollage(
         }}
       >
         <div
-          className="relative h-full w-full"
-          style={{ transform: `rotate(${GIRL_WINDOW.rotate}deg)` }}
+          className="relative h-full w-full overflow-hidden"
+          style={{
+            transform: `rotate(${GIRL_WINDOW.rotate}deg)`,
+            // Soften hard rect edges so ink image border doesn't peek past the frame
+            WebkitMaskImage:
+              'linear-gradient(to right, #000 0%, #000 93%, transparent 100%), linear-gradient(to bottom, #000 0%, #000 94%, transparent 100%)',
+            WebkitMaskComposite: 'source-in',
+            maskImage:
+              'linear-gradient(to right, #000 0%, #000 93%, transparent 100%), linear-gradient(to bottom, #000 0%, #000 94%, transparent 100%)',
+            maskComposite: 'intersect',
+          }}
         >
           <InkRevealPortrait
             ref={miaInkRef}
@@ -170,6 +245,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             size={windowInk.size}
             speed={windowInk.speed}
             rotation={windowInk.rotation}
+            onComplete={revealChrome}
           />
           <div
             className="pointer-events-none absolute inset-x-0 top-0 z-[1] bg-gradient-to-b from-black to-transparent"
@@ -192,12 +268,17 @@ const HeroCollage = forwardRef(function HeroCollage(
             }}
             aria-hidden
           />
+          {/* Cover hard bot-right ink rect edge under the open frame corner */}
+          <div
+            className="pointer-events-none absolute bottom-0 right-0 z-[2] h-[14%] w-[16%] bg-gradient-to-tl from-black via-black/80 to-transparent"
+            aria-hidden
+          />
         </div>
       </div>
 
-      {/* Girl window frame */}
+      {/* Girl window frame — opacity owned by GSAP (no React style opacity) */}
       <div
-        className="parallax-layer absolute z-[12]"
+        className="parallax-layer absolute z-[12] opacity-0"
         data-depth="0.45"
         data-collage="frame"
         style={{
@@ -205,7 +286,6 @@ const HeroCollage = forwardRef(function HeroCollage(
           top: `${GIRL_FRAME.top}%`,
           width: GIRL_FRAME.width,
           height: GIRL_FRAME.height,
-          opacity: GIRL_FRAME.opacity,
         }}
       >
         <img
@@ -242,18 +322,20 @@ const HeroCollage = forwardRef(function HeroCollage(
 
       {/* Compass / star */}
       <div
-        className="parallax-layer absolute right-[2%] top-[42%] z-[5] w-[140px] md:right-[4%] md:top-[40%] md:w-[170px]"
+        className="parallax-layer absolute right-[2%] top-[42%] z-[5] w-[140px] opacity-0 md:right-[4%] md:top-[40%] md:w-[170px]"
         data-depth="0.9"
         data-collage="compass"
+        data-fade-shape="star"
       >
         <Compass className="h-full w-full opacity-80" />
       </div>
 
       {/* Handwritten quote */}
       <div
-        className="parallax-layer absolute right-[10%] top-[54%] z-[5] max-w-[200px] rotate-[-2deg] md:right-[14%] md:top-[56%] md:max-w-[220px]"
+        className="parallax-layer absolute right-[10%] top-[54%] z-[5] max-w-[200px] rotate-[-2deg] opacity-0 md:right-[14%] md:top-[56%] md:max-w-[220px]"
         data-depth="0.6"
         data-collage="quote"
+        data-fade-shape="text"
       >
         <p className="font-hand text-[1.35rem] leading-[1.55] tracking-wide text-aemia-fog/80 md:text-[1.55rem]">
           they call it
