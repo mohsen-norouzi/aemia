@@ -177,13 +177,8 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
           ease: 'power2.out',
         })
         gsap.to('[data-enter-label]', {
-          letterSpacing: '0.72em',
-          opacity: 1,
-          duration: 0.35,
-          ease: 'power2.out',
-        })
-        gsap.to('[data-enter-arrow]', {
-          x: 6,
+          letterSpacing: '0.52em',
+          color: '#e8e6e0',
           opacity: 1,
           duration: 0.35,
           ease: 'power2.out',
@@ -208,14 +203,9 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
           ease: 'power2.out',
         })
         gsap.to('[data-enter-label]', {
-          letterSpacing: '0.55em',
+          letterSpacing: '0.42em',
+          color: 'rgba(200,200,196,0.9)',
           opacity: 1,
-          duration: 0.35,
-          ease: 'power2.out',
-        })
-        gsap.to('[data-enter-arrow]', {
-          x: 0,
-          opacity: 0.8,
           duration: 0.35,
           ease: 'power2.out',
         })
@@ -362,16 +352,9 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
       >
         <span
           data-enter-label
-          className="font-body text-[0.72rem] font-medium tracking-[0.55em] text-aemia-bone transition-colors md:text-[0.8rem]"
+          className="font-display text-[0.95rem] font-normal uppercase tracking-[0.42em] text-aemia-fog/90 md:text-[1.1rem]"
         >
-          ENTER AEMIA
-        </span>
-        <span
-          data-enter-arrow
-          className="mt-3 text-sm text-aemia-bone/80"
-          aria-hidden
-        >
-          →
+          Enter Aemia
         </span>
       </button>
 
