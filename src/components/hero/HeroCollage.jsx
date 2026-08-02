@@ -1,6 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import gsap from 'gsap'
-import { useControls } from 'leva'
 import { Waveform } from './Decorative'
 import InkRevealPortrait, { INK_REVEAL } from './InkRevealPortrait'
 
@@ -26,6 +25,13 @@ const GIRL_WINDOW_FADE = {
   top: 39,
   topLeft: 50,
   topRight: 53,
+}
+
+const WAVE_PLAY = {
+  size: 139,
+  opacity: 0.33,
+  x: 0,
+  y: -127,
 }
 
 const DEFAULT_INK = {
@@ -94,12 +100,7 @@ const HeroCollage = forwardRef(function HeroCollage(
     opacity: waveOpacity = 0.95,
   } = waveLayout
 
-  const { size, opacity, x, y } = useControls('Wave Play', {
-    size: { value: 139, min: 10, max: 400, step: 1, label: 'Size %' },
-    opacity: { value: 0.33, min: 0, max: 1, step: 0.01 },
-    x: { value: 0, min: -200, max: 200, step: 0.5, label: 'X %' },
-    y: { value: -127, min: -200, max: 200, step: 0.5, label: 'Y %' },
-  })
+  const { size, opacity, x, y } = WAVE_PLAY
 
   const togglePlayback = useCallback(() => {
     window.dispatchEvent(new CustomEvent('aemia:toggle'))
@@ -506,7 +507,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         }}
       >
         <div
-          className={`wave-hit relative w-full ${playing ? 'is-playing' : ''}`}
+          className="wave-hit relative w-full"
         >
           {/* Clickable glyph — behind bars; play/pause crossfade */}
           <button
