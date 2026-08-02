@@ -168,7 +168,7 @@ button,
 
 /* Waveform bars */
 .wave-bar {
-  transform-origin: center bottom;
+  transform-origin: center center;
 }
 
 /* Listen button hover */

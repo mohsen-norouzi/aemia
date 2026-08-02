@@ -78,7 +78,7 @@ export default function Hero({ playing = false }) {
       gsap.set(fadeShapes, { opacity: 0 })
       gsap.set(otherLayers, { opacity: 0 })
       gsap.set('[data-copy="title"]', { opacity: 0 })
-      gsap.set('.sw-bar', { scaleY: 0.35, transformOrigin: 'center center' })
+      gsap.set('.sw-bar, .wave-bar', { scaleY: 0.35, transformOrigin: 'center center' })
 
       if (!reduceMotion) {
         tl.add(() => {
@@ -171,7 +171,7 @@ export default function Hero({ playing = false }) {
   }, [])
 
   useEffect(() => {
-    const bars = gsap.utils.toArray('.sw-bar')
+    const bars = gsap.utils.toArray('.sw-bar, .wave-bar')
     if (!bars.length) return undefined
 
     barsTweenRef.current?.kill()

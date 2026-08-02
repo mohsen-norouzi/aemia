@@ -6,13 +6,7 @@ function App() {
   const [entered, setEntered] = useState(false)
   const [playing, setPlaying] = useState(false)
   const audioRef = useRef(null)
-
-  const stopPlayback = useCallback(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.pause()
-    setPlaying(false)
-  }, [])
+  const resumeOnVisibleRef = useRef(false)
 
   const startPlayback = useCallback(async () => {
     const audio = audioRef.current
@@ -37,23 +31,39 @@ function App() {
     setEntered(true)
   }, [])
 
-  // Stop when the tab is hidden
+  // Pause when the tab is hidden; resume when it becomes visible again
   useEffect(() => {
     const onVisibility = () => {
+      const audio = audioRef.current
+      if (!audio) return
+
       if (document.visibilityState === 'hidden') {
-        stopPlayback()
+        if (!audio.paused) {
+          resumeOnVisibleRef.current = true
+          audio.pause()
+          setPlaying(false)
+        }
+        return
+      }
+
+      if (resumeOnVisibleRef.current) {
+        resumeOnVisibleRef.current = false
+        startPlayback()
       }
     }
     document.addEventListener('visibilitychange', onVisibility)
     return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [stopPlayback])
+  }, [startPlayback])
 
   // Song ended → bars stop (via playing=false)
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return undefined
 
-    const onEnded = () => setPlaying(false)
+    const onEnded = () => {
+      resumeOnVisibleRef.current = false
+      setPlaying(false)
+    }
     audio.addEventListener('ended', onEnded)
     return () => audio.removeEventListener('ended', onEnded)
   }, [])
@@ -65,6 +75,7 @@ function App() {
     const onListen = () => {
       const audio = audioRef.current
       if (!audio) return
+      resumeOnVisibleRef.current = false
       audio.currentTime = 0
       startPlayback()
     }
