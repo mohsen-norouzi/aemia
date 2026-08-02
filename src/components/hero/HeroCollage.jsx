@@ -76,7 +76,7 @@ const HeroCollage = forwardRef(function HeroCollage(
       overwrite: true,
     })
 
-    // OUT NOW — scale pop only (no rotation), resting tilt via CSS
+    // OUT NOW — scale pop only (no rotation, no bounce)
     gsap.fromTo(
       '[data-copy="outnow"]',
       { scale: 1.4, opacity: 0 },
@@ -84,7 +84,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         scale: 1,
         opacity: 1,
         duration: 0.7,
-        ease: 'back.out(1.6)',
+        ease: 'power3.out',
         overwrite: true,
         transformOrigin: '50% 50%',
       },

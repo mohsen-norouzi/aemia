@@ -39,10 +39,11 @@ function MoonScroll() {
   )
 }
 
-export default function Hero() {
+export default function Hero({ playing = false }) {
   const rootRef = useRef(null)
   const inkRef = useRef(null)
   const entranceCtxRef = useRef(null)
+  const barsTweenRef = useRef(null)
 
   useEffect(() => {
     const root = rootRef.current
@@ -65,6 +66,7 @@ export default function Hero() {
       gsap.set(fadeShapes, { opacity: 0 })
       gsap.set(otherLayers, { opacity: 0 })
       gsap.set('[data-copy="title"]', { opacity: 0 })
+      gsap.set('.sw-bar', { scaleY: 0.35, transformOrigin: 'center center' })
 
       // Ink starts with the page entrance (not after nav/copy)
       if (!reduceMotion) {
@@ -150,9 +152,26 @@ export default function Hero() {
         { opacity: 0, duration: 0.7 },
         '-=0.45',
       )
+    }, root)
 
-      gsap.to('.sw-bar', {
-        scaleY: () => gsap.utils.random(0.4, 1.4),
+    return () => {
+      barsTweenRef.current?.kill()
+      barsTweenRef.current = null
+      entranceCtxRef.current?.revert()
+    }
+  }, [])
+
+  // Soundwave bars follow playback — smooth settle when song ends / tab hides
+  useEffect(() => {
+    const bars = gsap.utils.toArray('.sw-bar')
+    if (!bars.length) return undefined
+
+    barsTweenRef.current?.kill()
+    barsTweenRef.current = null
+
+    if (playing) {
+      barsTweenRef.current = gsap.to(bars, {
+        scaleY: () => gsap.utils.random(0.45, 1.45),
         transformOrigin: 'center center',
         duration: () => gsap.utils.random(0.2, 0.45),
         yoyo: true,
@@ -160,12 +179,19 @@ export default function Hero() {
         ease: 'sine.inOut',
         stagger: 0.05,
       })
-    }, root)
-
-    return () => {
-      entranceCtxRef.current?.revert()
+      return undefined
     }
-  }, [])
+
+    gsap.to(bars, {
+      scaleY: 0.35,
+      duration: 0.85,
+      ease: 'power2.out',
+      stagger: 0.04,
+      overwrite: true,
+    })
+
+    return undefined
+  }, [playing])
 
   return (
     <section
