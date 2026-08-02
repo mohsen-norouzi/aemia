@@ -225,11 +225,11 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="main"
         data-ink
         data-glitch
-        data-glitch-src="/img/hero-portrait.png"
+        data-glitch-src="/img/hero-portrait.jpg"
       >
         <InkRevealPortrait
           ref={mainInkRef}
-          imageUrl="/img/hero-portrait.png"
+          imageUrl="/img/hero-portrait.jpg"
           alt="Aemia"
           {...baseInk}
           size={portrait.size}
@@ -263,12 +263,12 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="concert"
         data-ink
         data-glitch
-        data-glitch-src="/img/kurosh.png"
+        data-glitch-src="/img/kurosh.jpg"
       >
         <div className="brightness-[0.72] contrast-[1.2] saturate-[0.35]">
           <InkRevealPortrait
             ref={concertInkRef}
-            imageUrl="/img/kurosh.png"
+            imageUrl="/img/kurosh.jpg"
             className="w-full"
             imgClassName="aspect-[4/5] w-full object-cover object-[center_18%]"
             {...baseInk}
@@ -325,7 +325,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         <div
           className="relative h-full w-full overflow-hidden"
           data-glitch
-          data-glitch-src="/img/girl-window.png"
+          data-glitch-src="/img/girl-window.jpg"
           style={{
             transform: `rotate(${GIRL_WINDOW.rotate}deg)`,
             // Soften hard rect edges so ink image border doesn't peek past the frame
@@ -339,7 +339,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         >
           <InkRevealPortrait
             ref={miaInkRef}
-            imageUrl="/img/girl-window.png"
+            imageUrl="/img/girl-window.jpg"
             className="h-full w-full"
             imgClassName="block h-full w-full object-cover"
             {...baseInk}

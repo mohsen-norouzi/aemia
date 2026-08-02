@@ -17,7 +17,7 @@ export const INK_REVEAL = {
  */
 const InkRevealPortrait = forwardRef(function InkRevealPortrait(
   {
-    imageUrl = '/img/hero-portrait.png',
+    imageUrl = '/img/hero-portrait.jpg',
     videoUrl = INK_REVEAL.videoUrl,
     invert = INK_REVEAL.invert,
     randomize = INK_REVEAL.randomize,

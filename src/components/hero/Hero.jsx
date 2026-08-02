@@ -256,7 +256,7 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
     >
       <div className="pointer-events-none absolute inset-0">
         <img
-          src="/img/bg.png"
+          src="/img/bg.jpg"
           alt=""
           className="h-full w-full object-cover"
           draggable={false}

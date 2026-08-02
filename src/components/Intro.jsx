@@ -265,7 +265,7 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
       className="relative h-svh max-h-svh w-full overflow-hidden bg-aemia-black text-aemia-bone"
     >
       <img
-        src="/img/intro-background.png"
+        src="/img/intro-background.jpg"
         alt=""
         className="pointer-events-none absolute inset-0 h-full w-full object-cover"
         draggable={false}
