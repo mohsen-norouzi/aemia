@@ -32,14 +32,31 @@ function App() {
     }
   }, [ensureGraph])
 
-  // Called on ENTER click (user gesture) — start song immediately
+  // ENTER click = user gesture — start song immediately
   const handleEnterClick = useCallback(() => {
     startPlayback()
   }, [startPlayback])
 
-  // Called after intro fade — mount main page
+  // After intro fade — mount hero and ensure song is playing
   const handleEnterComplete = useCallback(() => {
     setEntered(true)
+    startPlayback()
+  }, [startPlayback])
+
+  // Keep React `playing` in sync with the audio element
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return undefined
+
+    const sync = () => setPlaying(!audio.paused && !audio.ended)
+    audio.addEventListener('play', sync)
+    audio.addEventListener('playing', sync)
+    audio.addEventListener('pause', sync)
+    return () => {
+      audio.removeEventListener('play', sync)
+      audio.removeEventListener('playing', sync)
+      audio.removeEventListener('pause', sync)
+    }
   }, [])
 
   // Pause when the tab is hidden; resume when it becomes visible again

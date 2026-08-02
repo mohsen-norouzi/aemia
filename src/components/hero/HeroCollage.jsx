@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react'
 import gsap from 'gsap'
+import { useControls } from 'leva'
 import { Waveform } from './Decorative'
 import InkRevealPortrait, { INK_REVEAL } from './InkRevealPortrait'
 
@@ -41,6 +42,8 @@ const HeroCollage = forwardRef(function HeroCollage(
     portraitLayout = {},
     starShine = {},
     starCircle = {},
+    waveLayout = {},
+    playing = false,
     onInkReady,
   },
   inkRef,
@@ -82,6 +85,25 @@ const HeroCollage = forwardRef(function HeroCollage(
     scale: circleScale = 520,
     opacity: circleOpacity = 0.5,
   } = starCircle
+
+  const {
+    left: waveLeft = 1.5,
+    bottom: waveBottom = 5,
+    width: waveWidth = 23,
+    maxWidth: waveMaxWidth = 440,
+    opacity: waveOpacity = 0.95,
+  } = waveLayout
+
+  const { size, opacity, x, y } = useControls('Wave Play', {
+    size: { value: 139, min: 10, max: 400, step: 1, label: 'Size %' },
+    opacity: { value: 0.33, min: 0, max: 1, step: 0.01 },
+    x: { value: 0, min: -200, max: 200, step: 0.5, label: 'X %' },
+    y: { value: -127, min: -200, max: 200, step: 0.5, label: 'Y %' },
+  })
+
+  const togglePlayback = useCallback(() => {
+    window.dispatchEvent(new CustomEvent('aemia:toggle'))
+  }, [])
 
   // Full frame is 9/16; heightShow crops how much vertical of that frame is visible
   const portraitAspectH = (16 * heightShow) / 100
@@ -471,13 +493,73 @@ const HeroCollage = forwardRef(function HeroCollage(
         <div className="mt-3 h-px w-[85%] origin-left rotate-[-2deg] bg-white/45" />
       </div>
 
-      {/* Soundwave graphic */}
+      {/* Soundwave — big faded play/pause behind bars */}
       <div
-        className="parallax-layer absolute bottom-[10%] right-[8%] z-[5] w-[46%] max-w-[440px] opacity-95 md:bottom-[12%] md:right-[12%]"
-        data-depth="0.4"
+        className="absolute z-[20]"
         data-collage="wave"
+        style={{
+          left: `${waveLeft}%`,
+          bottom: `${waveBottom}%`,
+          width: `${waveWidth}%`,
+          maxWidth: waveMaxWidth,
+          opacity: waveOpacity,
+        }}
       >
-        <Waveform className="h-auto w-full" />
+        <div
+          className={`wave-hit relative w-full ${playing ? 'is-playing' : ''}`}
+        >
+          {/* Clickable glyph — behind bars; play/pause crossfade */}
+          <button
+            type="button"
+            className="wave-play-glyph pointer-events-auto absolute z-0 border-0 bg-transparent p-0"
+            style={{
+              left: `calc(50% + ${x}%)`,
+              top: `calc(50% + ${y}%)`,
+              height: `${size}%`,
+              width: 'auto',
+              aspectRatio: '1',
+              transform: 'translate(-50%, -50%)',
+              opacity,
+            }}
+            aria-label={playing ? 'Pause' : 'Play'}
+            onClick={togglePlayback}
+          >
+            <span className="relative block h-full w-auto aspect-square">
+              <img
+                src="/img/play.png?v=2"
+                alt=""
+                className="wave-play-img absolute inset-0 h-full w-full max-w-none select-none object-contain"
+                draggable={false}
+                style={{
+                  opacity: playing ? 0 : 1,
+                  transition: 'opacity 0.45s ease',
+                }}
+              />
+              <img
+                src="/img/pause.png?v=2"
+                alt=""
+                className="wave-play-img absolute inset-0 h-full w-full max-w-none select-none object-contain"
+                draggable={false}
+                style={{
+                  opacity: playing ? 1 : 0,
+                  transition: 'opacity 0.45s ease',
+                }}
+              />
+            </span>
+          </button>
+
+          <div className="wave-bars-wrap pointer-events-none relative z-[1]">
+            <Waveform className="h-auto w-full" />
+          </div>
+
+          {/* Toggle when clicking the bars */}
+          <button
+            type="button"
+            className="wave-play-hit pointer-events-auto absolute inset-0 z-[2] border-0 bg-transparent p-0"
+            aria-label={playing ? 'Pause' : 'Play'}
+            onClick={togglePlayback}
+          />
+        </div>
       </div>
 
       {/* Extra girl-2 peek — no ink */}

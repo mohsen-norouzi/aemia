@@ -3,7 +3,6 @@ import gsap from 'gsap'
 import HeroNav from './HeroNav'
 import HeroCopy from './HeroCopy'
 import HeroCollage from './HeroCollage'
-import HeroSocials from './HeroSocials'
 import { DecorativeLines } from './Decorative'
 import { useMusicGlitch } from '../../hooks/useMusicGlitch'
 import { useAudioReactiveBars } from '../../hooks/useAudioReactiveBars'
@@ -37,6 +36,14 @@ const STAR_CIRCLE = {
   top: 3,
   scale: 520,
   opacity: 0.5,
+}
+
+const WAVE_LAYOUT = {
+  left: 1.5,
+  bottom: 5,
+  width: 23,
+  maxWidth: 440,
+  opacity: 0.95,
 }
 
 const GLITCH_SETTINGS = {
@@ -182,7 +189,7 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
       )
 
       tl.from(
-        '[data-ui="scroll"], [data-ui="sections"], [data-ui="socials"]',
+        '[data-ui="scroll"], [data-ui="sections"]',
         { opacity: 0, duration: 0.7 },
         '-=0.45',
       )
@@ -284,11 +291,12 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
         portraitLayout={PORTRAIT_LAYOUT}
         starShine={STAR_SHINE}
         starCircle={STAR_CIRCLE}
+        waveLayout={WAVE_LAYOUT}
+        playing={playing}
         onInkReady={onInkReady}
       />
       <HeroNav playing={playing} />
       <HeroCopy />
-      <HeroSocials />
       <MoonScroll />
 
       <aside

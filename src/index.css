@@ -197,10 +197,50 @@ button,
   user-select: none;
 }
 
-/* Waveform bars */
+/* Waveform — bars on top; big faded play/pause behind */
 .waveform-scratch {
   opacity: 1;
   overflow: visible;
+}
+
+.wave-hit {
+  overflow: visible;
+}
+
+.wave-hit .wave-bars-wrap {
+  transition: opacity 0.4s ease;
+  opacity: 0.34;
+}
+
+.wave-hit.is-playing .wave-bars-wrap {
+  opacity: 1;
+}
+
+.wave-play-glyph {
+  transition: opacity 0.35s ease;
+}
+
+.wave-play-img {
+  mix-blend-mode: screen;
+  object-fit: contain;
+  will-change: opacity;
+}
+
+.wave-hit:hover .wave-play-glyph,
+.wave-hit:focus-within .wave-play-glyph {
+  filter: brightness(1.12);
+}
+
+.wave-play-hit {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+.wave-play-hit:focus-visible {
+  outline: 1px solid rgba(102, 132, 107, 0.55);
+  outline-offset: 4px;
 }
 
 /* Listen button hover */

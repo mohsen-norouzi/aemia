@@ -61,16 +61,17 @@ export default function HeroCopy() {
         </p>
 
         <a
-          href="#listen"
+          href="https://www.youtube.com/"
+          target="_blank"
+          rel="noreferrer"
           className="listen-btn relative mt-7 flex w-[min(100%,280px)] items-center justify-between border-[0.5px] border-[#66846b]/50 bg-transparent py-[1.15rem] pl-6 pr-5 font-body text-[0.62rem] font-medium tracking-[0.34em] text-aemia-fog/90"
           data-copy="btn"
-          onClick={(e) => {
-            e.preventDefault()
-            window.dispatchEvent(new CustomEvent('aemia:listen'))
-          }}
         >
-          LISTEN NOW
-          <span className="listen-arrow text-[0.9rem] font-light leading-none text-aemia-fog/80" aria-hidden>
+          WATCH VIDEO
+          <span
+            className="listen-arrow text-[0.9rem] font-light leading-none text-aemia-fog/80"
+            aria-hidden
+          >
             ↗
           </span>
         </a>
