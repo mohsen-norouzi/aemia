@@ -79,7 +79,10 @@ function App() {
       {entered ? (
         <Hero playing={playing} />
       ) : (
-        <Intro onEnterClick={handleEnterClick} onEnterComplete={handleEnterComplete} />
+        <Intro
+          onEnterClick={handleEnterClick}
+          onEnterComplete={handleEnterComplete}
+        />
       )}
     </main>
   )
