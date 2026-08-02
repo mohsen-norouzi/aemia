@@ -48,17 +48,17 @@ function rand(min, max) {
   return min + Math.random() * (max - min)
 }
 
-/** Per-play variety for delay / flip / offset; size·speed·rotation come from controls */
+/** Mild per-play variety: stagger + tiny offset. No flips (those clip images). */
 export function buildInkFeel(opts = {}) {
   const extras = opts.randomize !== false
   return {
-    delay: extras ? rand(0, 0.28) : 0,
+    delay: extras ? rand(0, 0.18) : 0,
     rate: opts.speed ?? opts.playbackRate ?? 1,
-    flipX: extras ? Math.random() > 0.45 : false,
-    flipY: extras ? Math.random() > 0.7 : false,
+    flipX: false,
+    flipY: false,
     scale: opts.size ?? 1.35,
-    ox: extras ? rand(-0.28, 0.28) : 0,
-    oy: extras ? rand(-0.28, 0.28) : 0,
+    ox: extras ? rand(-0.06, 0.06) : 0,
+    oy: extras ? rand(-0.06, 0.06) : 0,
     rot: ((opts.rotation ?? 0) * Math.PI) / 180,
   }
 }

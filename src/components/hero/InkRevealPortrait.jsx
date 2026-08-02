@@ -6,7 +6,7 @@ export const INK_REVEAL = {
   videoUrl: '/video/ink-splash.mp4',
   invert: true,
   randomize: true,
-  size: 1.35,
+  size: 1.45,
   speed: 1,
   rotation: 0,
 }

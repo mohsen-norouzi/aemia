@@ -39,10 +39,11 @@ const PORTRAIT_FOOT_FADE = {
 }
 
 const WAVE_PLAY = {
-  size: 139,
+  // % of wave width (not height) so taller bars don't scale the glyph
+  size: 22.5,
   opacity: 0.33,
   x: 0,
-  y: -127,
+  y: -96,
 }
 
 const DEFAULT_INK = {
@@ -563,8 +564,8 @@ const HeroCollage = forwardRef(function HeroCollage(
             style={{
               left: `calc(50% + ${x}%)`,
               top: `calc(50% + ${y}%)`,
-              height: `${size}%`,
-              width: 'auto',
+              width: `${size}%`,
+              height: 'auto',
               aspectRatio: '1',
               transform: 'translate(-50%, -50%)',
               opacity,
@@ -572,7 +573,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             aria-label={playing ? 'Pause' : 'Play'}
             onClick={togglePlayback}
           >
-            <span className="relative block h-full w-auto aspect-square">
+            <span className="relative block w-full aspect-square">
               <img
                 src="/img/play.png?v=3"
                 alt=""

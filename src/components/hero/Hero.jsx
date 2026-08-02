@@ -8,10 +8,10 @@ import { useMusicGlitch } from '../../hooks/useMusicGlitch'
 import { useAudioReactiveBars } from '../../hooks/useAudioReactiveBars'
 
 const INK_SETTINGS = {
-  portrait: { size: 1.4, speed: 1, rotation: -8 },
-  window: { size: 1.55, speed: 0.85, rotation: 12 },
-  concert: { size: 1.7, speed: 1.15, rotation: -18 },
-  eyes: { size: 1.5, speed: 0.95, rotation: 22 },
+  portrait: { size: 1.55, speed: 0.92, rotation: -14 },
+  window: { size: 1.7, speed: 0.8, rotation: 18 },
+  concert: { size: 1.85, speed: 1.05, rotation: -24 },
+  eyes: { size: 1.65, speed: 0.88, rotation: 28 },
 }
 
 const PORTRAIT_LAYOUT = {
