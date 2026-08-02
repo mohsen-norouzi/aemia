@@ -527,7 +527,7 @@ const HeroCollage = forwardRef(function HeroCollage(
           >
             <span className="relative block h-full w-auto aspect-square">
               <img
-                src="/img/play.png?v=2"
+                src="/img/play.png?v=3"
                 alt=""
                 className="wave-play-img absolute inset-0 h-full w-full max-w-none select-none object-contain"
                 draggable={false}
@@ -537,7 +537,7 @@ const HeroCollage = forwardRef(function HeroCollage(
                 }}
               />
               <img
-                src="/img/pause.png?v=2"
+                src="/img/pause.png?v=3"
                 alt=""
                 className="wave-play-img absolute inset-0 h-full w-full max-w-none select-none object-contain"
                 draggable={false}
