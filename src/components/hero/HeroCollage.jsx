@@ -43,7 +43,7 @@ const WAVE_PLAY = {
   size: 22.5,
   opacity: 0.33,
   x: 0,
-  y: -96,
+  y: -138,
 }
 
 const DEFAULT_INK = {
