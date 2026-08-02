@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import { useControls, button } from 'leva'
 import HeroNav from './HeroNav'
 import HeroCopy from './HeroCopy'
 import HeroCollage from './HeroCollage'
@@ -32,15 +33,62 @@ function MoonScroll() {
   )
 }
 
+function inkControls(defaults = {}) {
+  return {
+    size: { value: defaults.size ?? 1.35, min: 0.6, max: 3, step: 0.01 },
+    speed: { value: defaults.speed ?? 1, min: 0.3, max: 2.5, step: 0.05 },
+    rotation: {
+      value: defaults.rotation ?? 0,
+      min: -180,
+      max: 180,
+      step: 1,
+    },
+  }
+}
+
 export default function Hero() {
   const rootRef = useRef(null)
+  const inkRef = useRef(null)
+  const entranceCtxRef = useRef(null)
+
+  useControls('Ink reveals', {
+    replayAll: button(() => {
+      inkRef.current?.replay?.()
+    }),
+  })
+
+  const portrait = useControls('Ink · Portrait', inkControls({ size: 1.4, speed: 1, rotation: -8 }))
+  const windowInk = useControls(
+    'Ink · Window',
+    inkControls({ size: 1.55, speed: 0.85, rotation: 12 }),
+  )
+  const concert = useControls(
+    'Ink · Concert',
+    inkControls({ size: 1.7, speed: 1.15, rotation: -18 }),
+  )
+  const eyes = useControls(
+    'Ink · Mia star',
+    inkControls({ size: 1.5, speed: 0.95, rotation: 22 }),
+  )
+
+  const inkSettings = {
+    portrait,
+    window: windowInk,
+    concert,
+    eyes,
+  }
 
   useEffect(() => {
     const root = rootRef.current
     if (!root) return
 
-    const ctx = gsap.context(() => {
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    entranceCtxRef.current = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      const otherLayers = gsap.utils.toArray('[data-collage]:not([data-ink])')
 
       tl.from('[data-nav="logo"]', {
         y: -20,
@@ -84,22 +132,36 @@ export default function Hero() {
           { y: 16, opacity: 0, duration: 0.6, stagger: 0.1 },
           '-=0.3',
         )
-        .from(
-          '[data-collage]',
-          {
-            opacity: 0,
-            y: 28,
-            duration: 0.9,
-            stagger: { each: 0.07, from: 'center' },
-            ease: 'power2.out',
-          },
-          '-=0.95',
-        )
-        .from(
-          '[data-ui="scroll"], [data-ui="sections"]',
-          { opacity: 0, duration: 0.7 },
-          '-=0.45',
-        )
+
+      tl.addLabel('collage', '-=0.95')
+
+      if (!reduceMotion) {
+        tl.add(() => {
+          inkRef.current?.replay?.()
+        }, 'collage')
+      } else {
+        tl.add(() => {
+          inkRef.current?.reveal?.()
+        }, 'collage')
+      }
+
+      tl.from(
+        otherLayers,
+        {
+          opacity: 0,
+          y: 28,
+          duration: 0.9,
+          stagger: { each: 0.07, from: 'center' },
+          ease: 'power2.out',
+        },
+        'collage+=0.1',
+      )
+
+      tl.from(
+        '[data-ui="scroll"], [data-ui="sections"]',
+        { opacity: 0, duration: 0.7 },
+        '-=0.45',
+      )
 
       gsap.to('.sw-bar', {
         scaleY: () => gsap.utils.random(0.4, 1.4),
@@ -112,7 +174,9 @@ export default function Hero() {
       })
     }, root)
 
-    return () => ctx.revert()
+    return () => {
+      entranceCtxRef.current?.revert()
+    }
   }, [])
 
   return (
@@ -131,7 +195,7 @@ export default function Hero() {
       </div>
 
       <DecorativeLines />
-      <HeroCollage />
+      <HeroCollage ref={inkRef} inkSettings={inkSettings} />
       <HeroNav />
       <HeroCopy />
       <MoonScroll />

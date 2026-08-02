@@ -1,4 +1,6 @@
+import { forwardRef, useImperativeHandle, useRef } from 'react'
 import { Compass, Waveform } from './Decorative'
+import InkRevealPortrait, { INK_REVEAL } from './InkRevealPortrait'
 
 const GIRL_WINDOW = {
   width: 226,
@@ -24,7 +26,54 @@ const GIRL_WINDOW_FADE = {
   topRight: 53,
 }
 
-export default function HeroCollage() {
+const DEFAULT_INK = {
+  size: INK_REVEAL.size,
+  speed: INK_REVEAL.speed,
+  rotation: INK_REVEAL.rotation,
+}
+
+const HeroCollage = forwardRef(function HeroCollage(
+  { inkSettings = {} },
+  inkRef,
+) {
+  const mainInkRef = useRef(null)
+  const miaInkRef = useRef(null)
+  const concertInkRef = useRef(null)
+  const eyesInkRef = useRef(null)
+
+  const portrait = { ...DEFAULT_INK, ...inkSettings.portrait }
+  const windowInk = { ...DEFAULT_INK, ...inkSettings.window }
+  const concert = { ...DEFAULT_INK, ...inkSettings.concert }
+  const eyes = { ...DEFAULT_INK, ...inkSettings.eyes }
+
+  useImperativeHandle(
+    inkRef,
+    () => ({
+      replay: async () => {
+        await Promise.all([
+          mainInkRef.current?.replay?.(),
+          miaInkRef.current?.replay?.(),
+          concertInkRef.current?.replay?.(),
+          eyesInkRef.current?.replay?.(),
+        ])
+      },
+      reveal: async () => {
+        await Promise.all([
+          mainInkRef.current?.reveal?.(),
+          miaInkRef.current?.reveal?.(),
+          concertInkRef.current?.reveal?.(),
+          eyesInkRef.current?.reveal?.(),
+        ])
+      },
+    }),
+    [],
+  )
+
+  const baseInk = {
+    ...INK_REVEAL,
+    autoPlay: false,
+  }
+
   return (
     <div className="hero-collage pointer-events-none absolute inset-0 z-10 overflow-hidden max-md:opacity-90">
       {/* Main portrait */}
@@ -32,54 +81,74 @@ export default function HeroCollage() {
         className="parallax-layer rough-frame absolute left-[48%] top-[28%] w-[46%] max-w-[420px] min-w-[160px] sm:left-[42%] sm:top-[14%] sm:w-[38%] md:left-[46%] md:top-[10%] lg:left-[48%]"
         data-depth="0.35"
         data-collage="main"
+        data-ink
       >
-        <div className="overflow-hidden">
-          <img
-            src="/img/hero-portrait.png"
-            alt="Aemia"
-            className="aspect-[3/4] h-full w-full object-cover object-center"
-          />
-        </div>
+        <InkRevealPortrait
+          ref={mainInkRef}
+          imageUrl="/img/hero-portrait.png"
+          alt="Aemia"
+          {...baseInk}
+          size={portrait.size}
+          speed={portrait.speed}
+          rotation={portrait.rotation}
+        />
         <div className="absolute -left-3 top-[18%] h-px w-8 bg-white/50" />
         <div className="absolute -right-4 top-[8%] h-10 w-px bg-white/40" />
         <div className="absolute -bottom-2 left-[12%] h-px w-16 bg-white/35" />
         <div className="absolute bottom-[20%] -right-5 h-px w-10 bg-white/40" />
       </div>
 
-      {/* Concert inset — top right */}
+      {/* Concert inset — ink */}
       <div
         className="parallax-layer absolute right-[6%] top-[10%] z-[5] w-[18%] max-w-[200px] min-w-[110px] overflow-hidden border border-white/20 md:right-[9%] md:top-[12%]"
         data-depth="0.55"
         data-collage="concert"
+        data-ink
       >
-        <img
-          src="/img/concert.jpg"
-          alt=""
-          className="aspect-[4/3] w-full object-cover brightness-[0.7] contrast-[1.1] hue-rotate-[190deg] saturate-[0.6]"
-        />
+        <div className="brightness-[0.7] contrast-[1.1] hue-rotate-[190deg] saturate-[0.6]">
+          <InkRevealPortrait
+            ref={concertInkRef}
+            imageUrl="/img/concert.jpg"
+            className="w-full"
+            imgClassName="aspect-[4/3] w-full object-cover"
+            {...baseInk}
+            size={concert.size}
+            speed={concert.speed}
+            rotation={concert.rotation}
+          />
+        </div>
         <div className="absolute inset-0 bg-sky-900/25 mix-blend-color" />
       </div>
 
-      {/* Eyes strip — bottom right, torn */}
+      {/* Eyes strip — ink */}
       <div
         className="parallax-layer torn-edge absolute bottom-[16%] right-[4%] z-[5] w-[28%] max-w-[320px] min-w-[160px] md:bottom-[18%] md:right-[8%]"
         data-depth="0.7"
         data-collage="eyes"
+        data-ink
       >
-        <img
-          src="/img/eyes.jpg"
-          alt=""
-          className="aspect-[16/9] w-full object-cover object-center brightness-[0.8] contrast-[1.15] saturate-[0.5]"
-        />
+        <div className="brightness-[0.8] contrast-[1.15] saturate-[0.5]">
+          <InkRevealPortrait
+            ref={eyesInkRef}
+            imageUrl="/img/mia-star.jpeg"
+            className="w-full"
+            imgClassName="aspect-square w-full object-cover object-center"
+            {...baseInk}
+            size={eyes.size}
+            speed={eyes.speed}
+            rotation={eyes.rotation}
+          />
+        </div>
         <div className="absolute inset-0 bg-aemia-moss/35 mix-blend-color" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
-      {/* Girl window photo */}
+      {/* Girl window photo — ink */}
       <div
         className="parallax-layer absolute z-[10]"
         data-depth="0.45"
         data-collage="mia"
+        data-ink
         style={{
           left: `${GIRL_WINDOW.left}%`,
           top: `${GIRL_WINDOW.top}%`,
@@ -92,19 +161,23 @@ export default function HeroCollage() {
           className="relative h-full w-full"
           style={{ transform: `rotate(${GIRL_WINDOW.rotate}deg)` }}
         >
-          <img
-            src="/img/girl-window.png"
-            alt=""
-            className="block h-full w-full select-none object-cover"
-            draggable={false}
+          <InkRevealPortrait
+            ref={miaInkRef}
+            imageUrl="/img/girl-window.png"
+            className="h-full w-full"
+            imgClassName="block h-full w-full object-cover"
+            {...baseInk}
+            size={windowInk.size}
+            speed={windowInk.speed}
+            rotation={windowInk.rotation}
           />
           <div
-            className="pointer-events-none absolute inset-x-0 top-0 bg-gradient-to-b from-black to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 z-[1] bg-gradient-to-b from-black to-transparent"
             style={{ height: `${GIRL_WINDOW_FADE.top}%` }}
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute left-0 top-0 bg-[radial-gradient(ellipse_at_top_left,black_0%,transparent_70%)]"
+            className="pointer-events-none absolute left-0 top-0 z-[1] bg-[radial-gradient(ellipse_at_top_left,black_0%,transparent_70%)]"
             style={{
               width: `${GIRL_WINDOW_FADE.topLeft}%`,
               height: `${GIRL_WINDOW_FADE.topLeft * 0.85}%`,
@@ -112,7 +185,7 @@ export default function HeroCollage() {
             aria-hidden
           />
           <div
-            className="pointer-events-none absolute right-0 top-0 bg-[radial-gradient(ellipse_at_top_right,black_0%,transparent_70%)]"
+            className="pointer-events-none absolute right-0 top-0 z-[1] bg-[radial-gradient(ellipse_at_top_right,black_0%,transparent_70%)]"
             style={{
               width: `${GIRL_WINDOW_FADE.topRight}%`,
               height: `${GIRL_WINDOW_FADE.topRight * 0.85}%`,
@@ -203,7 +276,7 @@ export default function HeroCollage() {
         <Waveform className="h-auto w-full" />
       </div>
 
-      {/* Extra girl-2 peek */}
+      {/* Extra girl-2 peek — no ink */}
       <div
         className="parallax-layer absolute left-[58%] top-[62%] z-[5] hidden w-[10%] max-w-[110px] rotate-3 overflow-hidden border border-white/15 opacity-60 lg:block"
         data-depth="0.8"
@@ -217,4 +290,6 @@ export default function HeroCollage() {
       </div>
     </div>
   )
-}
+})
+
+export default HeroCollage
