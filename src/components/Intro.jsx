@@ -334,7 +334,7 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
           src="/img/vexara-logo.png"
           alt="Vexara"
           className="w-auto select-none"
-          style={{ height: 64 }}
+          style={{ height: 92 }}
           draggable={false}
         />
       </a>
