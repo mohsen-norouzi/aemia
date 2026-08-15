@@ -252,7 +252,7 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
   return (
     <section
       ref={rootRef}
-      className="relative h-svh max-h-svh w-full overflow-hidden bg-aemia-black text-aemia-bone"
+      className="relative h-svh max-h-svh w-full overflow-hidden bg-vexara-black text-vexara-bone"
     >
       <img
         src="/img/intro-background.jpg"
@@ -331,8 +331,8 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         onClick={(e) => e.preventDefault()}
       >
         <img
-          src="/img/aemia-logo.png"
-          alt="Aemia"
+          src="/img/vexara-logo.png"
+          alt="Vexara"
           className="w-auto select-none"
           style={{ height: 64 }}
           draggable={false}
@@ -348,13 +348,13 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         onFocus={() => animRef.current.onEnterHover?.()}
         onBlur={() => animRef.current.onLeaveHover?.()}
         className="group absolute left-1/2 top-1/2 z-30 flex h-[min(58vw,280px)] w-[min(58vw,280px)] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full outline-none"
-        aria-label="Enter Aemia"
+        aria-label="Enter Vexara"
       >
         <span
           data-enter-label
-          className="font-display text-[0.95rem] font-normal uppercase tracking-[0.42em] text-aemia-fog/90 md:text-[1.1rem]"
+          className="font-display text-[0.95rem] font-normal uppercase tracking-[0.42em] text-vexara-fog/90 md:text-[1.1rem]"
         >
-          Enter Aemia
+          Enter Vexara
         </span>
       </button>
 
@@ -362,19 +362,19 @@ export default function Intro({ onEnterClick, onEnterComplete }) {
         data-intro
         className="pointer-events-none absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center md:bottom-9"
       >
-        <p className="font-body text-[0.55rem] font-medium tracking-[0.42em] text-aemia-fog/75 md:text-[0.58rem] md:tracking-[0.48em]">
+        <p className="font-body text-[0.55rem] font-medium tracking-[0.42em] text-vexara-fog/75 md:text-[0.58rem] md:tracking-[0.48em]">
           MUSIC IS{' '}
           <span className="text-[#66846b]">SURVIVAL</span>
-          <span className="text-aemia-fog/40">.</span>
+          <span className="text-vexara-fog/40">.</span>
         </p>
         <div
           className="mt-3.5 flex items-center gap-1.5"
           aria-hidden
         >
           <span className="h-px w-5 bg-[#66846b]/45 md:w-7" />
-          <span className="h-px w-10 bg-aemia-bone/30 md:w-14" />
-          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-aemia-bone/35" />
-          <span className="h-px w-10 bg-aemia-bone/30 md:w-14" />
+          <span className="h-px w-10 bg-vexara-bone/30 md:w-14" />
+          <span className="inline-block h-1.5 w-1.5 rotate-45 border border-vexara-bone/35" />
+          <span className="h-px w-10 bg-vexara-bone/30 md:w-14" />
           <span className="h-px w-5 bg-[#66846b]/45 md:w-7" />
         </div>
       </div>

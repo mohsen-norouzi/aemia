@@ -67,7 +67,7 @@ const HeroCollage = forwardRef(function HeroCollage(
   inkRef,
 ) {
   const mainInkRef = useRef(null)
-  const miaInkRef = useRef(null)
+  const girlInkRef = useRef(null)
   const concertInkRef = useRef(null)
   const eyesInkRef = useRef(null)
   const chromeShownRef = useRef(false)
@@ -128,7 +128,7 @@ const HeroCollage = forwardRef(function HeroCollage(
   const { size, opacity, x, y } = WAVE_PLAY
 
   const togglePlayback = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('aemia:toggle'))
+    window.dispatchEvent(new CustomEvent('vexara:toggle'))
   }, [])
 
   // Full frame is 9/16; heightShow crops how much vertical of that frame is visible
@@ -207,7 +207,7 @@ const HeroCollage = forwardRef(function HeroCollage(
     markInkDone()
   }, [markInkDone])
 
-  const onMiaComplete = useCallback(() => {
+  const onGirlComplete = useCallback(() => {
     markInkDone()
     revealChrome()
   }, [markInkDone, revealChrome])
@@ -220,7 +220,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         hideChrome()
         await Promise.all([
           mainInkRef.current?.replay?.(),
-          miaInkRef.current?.replay?.(),
+          girlInkRef.current?.replay?.(),
           concertInkRef.current?.replay?.(),
           eyesInkRef.current?.replay?.(),
         ])
@@ -229,7 +229,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         resetInkReady()
         await Promise.all([
           mainInkRef.current?.reveal?.(),
-          miaInkRef.current?.reveal?.(),
+          girlInkRef.current?.reveal?.(),
           concertInkRef.current?.reveal?.(),
           eyesInkRef.current?.reveal?.(),
         ])
@@ -328,7 +328,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         <InkRevealPortrait
           ref={mainInkRef}
           imageUrl="/img/hero-portrait.png"
-          alt="Aemia"
+          alt="Vexara"
           {...baseInk}
           size={portrait.size}
           speed={portrait.speed}
@@ -391,12 +391,12 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="eyes"
         data-ink
         data-glitch
-        data-glitch-src="/img/mia-star.jpeg"
+        data-glitch-src="/img/vexara-star.jpeg"
       >
         <div className="brightness-[0.8] contrast-[1.15] saturate-[0.5]">
           <InkRevealPortrait
             ref={eyesInkRef}
-            imageUrl="/img/mia-star.jpeg"
+            imageUrl="/img/vexara-star.jpeg"
             className="w-full"
             imgClassName="aspect-square w-full object-cover object-center"
             {...baseInk}
@@ -406,7 +406,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             onComplete={markInkDone}
           />
         </div>
-        <div className="absolute inset-0 bg-aemia-moss/35 mix-blend-color" />
+        <div className="absolute inset-0 bg-vexara-moss/35 mix-blend-color" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
@@ -414,7 +414,7 @@ const HeroCollage = forwardRef(function HeroCollage(
       <div
         className="parallax-layer absolute z-[10]"
         data-depth="0.45"
-        data-collage="mia"
+        data-collage="girl"
         data-ink
         style={{
           left: `${GIRL_WINDOW.left}%`,
@@ -440,7 +440,7 @@ const HeroCollage = forwardRef(function HeroCollage(
           }}
         >
           <InkRevealPortrait
-            ref={miaInkRef}
+            ref={girlInkRef}
             imageUrl="/img/girl-window.jpg"
             className="h-full w-full"
             imgClassName="block h-full w-full object-cover"
@@ -448,7 +448,7 @@ const HeroCollage = forwardRef(function HeroCollage(
             size={windowInk.size}
             speed={windowInk.speed}
             rotation={windowInk.rotation}
-            onComplete={onMiaComplete}
+            onComplete={onGirlComplete}
           />
           <div
             className="pointer-events-none absolute inset-x-0 top-0 z-[1] bg-gradient-to-b from-black to-transparent"
@@ -530,7 +530,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="quote"
         data-fade-shape="text"
       >
-        <p className="font-hand text-[1.35rem] leading-[1.55] tracking-wide text-aemia-fog/80 md:text-[1.55rem]">
+        <p className="font-hand text-[1.35rem] leading-[1.55] tracking-wide text-vexara-fog/80 md:text-[1.55rem]">
           they call it
           <br />
           kleptomaniac,

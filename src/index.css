@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-aemia-black: #050505;
-  --color-aemia-charcoal: #0c0c0c;
-  --color-aemia-moss: #5c705e;
-  --color-aemia-moss-light: #778e78;
-  --color-aemia-fog: #c8c8c4;
-  --color-aemia-bone: #e8e6e0;
-  --color-aemia-ash: #8a8a86;
+  --color-vexara-black: #050505;
+  --color-vexara-charcoal: #0c0c0c;
+  --color-vexara-moss: #5c705e;
+  --color-vexara-moss-light: #778e78;
+  --color-vexara-fog: #c8c8c4;
+  --color-vexara-bone: #e8e6e0;
+  --color-vexara-ash: #8a8a86;
 
   --font-display: "Bebas Neue", sans-serif;
   --font-logo: "Metal Mania", cursive;
@@ -32,8 +32,8 @@ body,
 }
 
 body {
-  background: var(--color-aemia-black);
-  color: var(--color-aemia-bone);
+  background: var(--color-vexara-black);
+  color: var(--color-vexara-bone);
   font-family: var(--font-body);
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
@@ -54,7 +54,7 @@ button,
 }
 
 ::selection {
-  background: var(--color-aemia-moss);
+  background: var(--color-vexara-moss);
   color: white;
 }
 
@@ -180,7 +180,7 @@ button,
 /* Spray-paint A */
 .spray-a {
   font-family: var(--font-logo);
-  color: var(--color-aemia-moss);
+  color: var(--color-vexara-moss);
   opacity: 0.45;
   filter: blur(0.3px);
   text-shadow:
@@ -265,7 +265,7 @@ button,
 
 .listen-btn:hover {
   background: #66846b;
-  color: var(--color-aemia-black);
+  color: var(--color-vexara-black);
   box-shadow: 0 0 24px rgba(102, 132, 107, 0.18);
 }
 
@@ -297,7 +297,7 @@ button,
   bottom: -4px;
   width: 100%;
   height: 1px;
-  background: var(--color-aemia-moss);
+  background: var(--color-vexara-moss);
   transform: scaleX(0);
   transform-origin: right;
   transition: transform 0.35s ease;
@@ -346,7 +346,7 @@ button,
 
 /* Vertical section indicator */
 .section-dot.active {
-  color: var(--color-aemia-bone);
+  color: var(--color-vexara-bone);
 }
 
 .section-dot.active::before {
@@ -356,6 +356,6 @@ button,
   top: 50%;
   width: 8px;
   height: 1px;
-  background: var(--color-aemia-bone);
+  background: var(--color-vexara-bone);
   transform: translateY(-50%);
 }

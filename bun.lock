@@ -3,7 +3,7 @@
   "configVersion": 0,
   "workspaces": {
     "": {
-      "name": "aemia",
+      "name": "vexara",
       "dependencies": {
         "gsap": "^3.15.0",
         "pixi.js": "^8.19.0",

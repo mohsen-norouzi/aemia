@@ -11,7 +11,7 @@ export default function HeroCopy() {
       }}
     >
       <p
-        className="absolute left-0 font-body text-[0.58rem] font-medium tracking-[0.42em] text-aemia-fog/80"
+        className="absolute left-0 font-body text-[0.58rem] font-medium tracking-[0.42em] text-vexara-fog/80"
         style={{ top: -34 }}
         data-copy="eyebrow"
       >
@@ -50,7 +50,7 @@ export default function HeroCopy() {
 
       <div style={{ marginTop: 18 }} className="flex flex-col items-start">
         <p
-          className="max-w-[230px] font-body text-[0.8rem] leading-[1.7] tracking-wide text-aemia-fog/85"
+          className="max-w-[230px] font-body text-[0.8rem] leading-[1.7] tracking-wide text-vexara-fog/85"
           data-copy="desc"
         >
           A new chapter begins.
@@ -64,12 +64,12 @@ export default function HeroCopy() {
           href="https://www.youtube.com/"
           target="_blank"
           rel="noreferrer"
-          className="listen-btn relative mt-7 flex w-[min(100%,280px)] items-center justify-between gap-8 border-[0.5px] border-[#66846b]/50 bg-transparent py-[1.15rem] pl-6 pr-7 font-body text-[0.62rem] font-medium tracking-[0.34em] text-aemia-fog/90"
+          className="listen-btn relative mt-7 flex w-[min(100%,280px)] items-center justify-between gap-8 border-[0.5px] border-[#66846b]/50 bg-transparent py-[1.15rem] pl-6 pr-7 font-body text-[0.62rem] font-medium tracking-[0.34em] text-vexara-fog/90"
           data-copy="btn"
         >
           WATCH VIDEO
           <span
-            className="listen-arrow text-[0.9rem] font-light leading-none text-aemia-fog/80"
+            className="listen-arrow text-[0.9rem] font-light leading-none text-vexara-fog/80"
             aria-hidden
           >
             ↗

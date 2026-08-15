@@ -125,11 +125,11 @@ function App() {
       startPlayback()
     }
 
-    window.addEventListener('aemia:listen', onListen)
-    window.addEventListener('aemia:toggle', onToggle)
+    window.addEventListener('vexara:listen', onListen)
+    window.addEventListener('vexara:toggle', onToggle)
     return () => {
-      window.removeEventListener('aemia:listen', onListen)
-      window.removeEventListener('aemia:toggle', onToggle)
+      window.removeEventListener('vexara:listen', onListen)
+      window.removeEventListener('vexara:toggle', onToggle)
     }
   }, [entered, startPlayback])
 

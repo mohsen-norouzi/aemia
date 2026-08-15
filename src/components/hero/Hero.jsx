@@ -59,7 +59,7 @@ function MoonScroll() {
       data-ui="scroll"
     >
       <div className="flex flex-col items-end gap-2">
-        <span className="font-body text-[0.5rem] tracking-[0.38em] text-aemia-fog/85">
+        <span className="font-body text-[0.5rem] tracking-[0.38em] text-vexara-fog/85">
           SCROLL
         </span>
         <div className="mr-[0.12rem] h-5 w-px bg-white/55 md:h-6" />
@@ -287,7 +287,7 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
     <section
       ref={rootRef}
       id="top"
-      className="relative h-svh max-h-svh w-full overflow-hidden bg-aemia-black text-aemia-bone"
+      className="relative h-svh max-h-svh w-full overflow-hidden bg-vexara-black text-vexara-bone"
     >
       <div className="pointer-events-none absolute inset-0">
         <img
@@ -324,8 +324,8 @@ export default function Hero({ playing = false, audioGraphRef = null }) {
             type="button"
             className={`section-dot relative font-body text-[0.62rem] tracking-[0.2em] transition-colors ${
               i === 1
-                ? 'active text-aemia-bone'
-                : 'text-aemia-ash/60 hover:text-aemia-fog'
+                ? 'active text-vexara-bone'
+                : 'text-vexara-ash/60 hover:text-vexara-fog'
             }`}
           >
             {n}

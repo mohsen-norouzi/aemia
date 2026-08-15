@@ -12,8 +12,8 @@ export default function HeroNav({ playing = false }) {
         style={{ left: 40, top: 21, opacity: 1 }}
       >
         <img
-          src="/img/aemia-logo.png"
-          alt="Aemia"
+          src="/img/vexara-logo.png"
+          alt="Vexara"
           className="w-auto select-none"
           style={{ height: 64 }}
           draggable={false}
@@ -38,7 +38,7 @@ export default function HeroNav({ playing = false }) {
           <a
             key={label}
             href={`#${label.toLowerCase()}`}
-            className="nav-link font-body text-[0.62rem] font-medium tracking-[0.32em] text-aemia-fog/90 transition-colors hover:text-white"
+            className="nav-link font-body text-[0.62rem] font-medium tracking-[0.32em] text-vexara-fog/90 transition-colors hover:text-white"
             data-nav="link"
           >
             {label}
@@ -48,11 +48,11 @@ export default function HeroNav({ playing = false }) {
 
       <button
         type="button"
-        className="pointer-events-auto absolute right-6 top-5 z-50 flex items-center gap-2.5 font-body text-[0.62rem] font-medium tracking-[0.28em] text-white transition-colors hover:text-aemia-fog md:right-10 md:top-6"
+        className="pointer-events-auto absolute right-6 top-5 z-50 flex items-center gap-2.5 font-body text-[0.62rem] font-medium tracking-[0.28em] text-white transition-colors hover:text-vexara-fog md:right-10 md:top-6"
         data-nav="cta"
         aria-label={playing ? 'Pause' : 'Listen now'}
         onClick={() => {
-          window.dispatchEvent(new CustomEvent('aemia:toggle'))
+          window.dispatchEvent(new CustomEvent('vexara:toggle'))
         }}
       >
         LISTEN NOW
