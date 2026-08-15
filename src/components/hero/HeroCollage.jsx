@@ -358,19 +358,19 @@ const HeroCollage = forwardRef(function HeroCollage(
         />
       </div>
 
-      {/* Kurosh inset — ink */}
+      {/* Concert inset — ink */}
       <div
         className="parallax-layer absolute right-[6%] top-[8%] z-[5] w-[15%] max-w-[170px] min-w-[96px] overflow-hidden border border-white/20 md:right-[9%] md:top-[10%]"
         data-depth="0.55"
         data-collage="concert"
         data-ink
         data-glitch
-        data-glitch-src="/img/kurosh.jpg"
+        data-glitch-src="/img/concert-inset.png"
       >
         <div className="brightness-[0.72] contrast-[1.2] saturate-[0.35]">
           <InkRevealPortrait
             ref={concertInkRef}
-            imageUrl="/img/kurosh.jpg"
+            imageUrl="/img/concert-inset.png"
             className="w-full"
             imgClassName="aspect-[4/5] w-full object-cover object-[center_18%]"
             {...baseInk}
@@ -391,12 +391,12 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-collage="eyes"
         data-ink
         data-glitch
-        data-glitch-src="/img/vexara-star.jpeg"
+        data-glitch-src="/img/vexara-star.png"
       >
         <div className="brightness-[0.8] contrast-[1.15] saturate-[0.5]">
           <InkRevealPortrait
             ref={eyesInkRef}
-            imageUrl="/img/vexara-star.jpeg"
+            imageUrl="/img/vexara-star.png"
             className="w-full"
             imgClassName="aspect-square w-full object-cover object-center"
             {...baseInk}
@@ -427,7 +427,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         <div
           className="relative h-full w-full overflow-hidden"
           data-glitch
-          data-glitch-src="/img/girl-window.jpg"
+          data-glitch-src="/img/girl-window.png"
           style={{
             transform: `rotate(${GIRL_WINDOW.rotate}deg)`,
             // Soften hard rect edges so ink image border doesn't peek past the frame
@@ -441,7 +441,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         >
           <InkRevealPortrait
             ref={girlInkRef}
-            imageUrl="/img/girl-window.jpg"
+            imageUrl="/img/girl-window.png"
             className="h-full w-full"
             imgClassName="block h-full w-full object-cover"
             {...baseInk}
@@ -617,10 +617,10 @@ const HeroCollage = forwardRef(function HeroCollage(
         data-depth="0.8"
         data-collage="peek"
         data-glitch
-        data-glitch-src="/img/girl-2.jpg"
+        data-glitch-src="/img/girl-2.png"
       >
         <img
-          src="/img/girl-2.jpg"
+          src="/img/girl-2.png"
           alt=""
           className="aspect-[3/4] w-full object-cover brightness-[0.7] grayscale"
         />
