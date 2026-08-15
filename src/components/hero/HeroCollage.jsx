@@ -533,7 +533,7 @@ const HeroCollage = forwardRef(function HeroCollage(
         <p className="font-hand text-[1.35rem] leading-[1.55] tracking-wide text-vexara-fog/80 md:text-[1.55rem]">
           they call it
           <br />
-          kleptomaniac,
+          anathematize,
           <br />
           i call it
           <br />

@@ -21,8 +21,8 @@ export default function HeroCopy() {
       <div className="relative w-full" data-copy="title-wrap">
         <h1 className="m-0 leading-none opacity-0" data-copy="title">
           <img
-            src="/img/kleptomaniac.png"
-            alt="Kleptomaniac"
+            src="/img/anathematize.png"
+            alt="Anathematize"
             className="h-auto w-full select-none"
             draggable={false}
           />
@@ -55,7 +55,7 @@ export default function HeroCopy() {
         >
           A new chapter begins.
           <br />
-          Kleptomaniac is out now
+          Anathematize is out now
           <br />
           on <span className="text-[#66846b]">all platforms.</span>
         </p>
